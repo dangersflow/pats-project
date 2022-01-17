@@ -14,8 +14,11 @@ class _PatternDisplayState extends State<PatternDisplay> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: widget.x * widget.y,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        childAspectRatio: 1,
         crossAxisCount: widget.x,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,

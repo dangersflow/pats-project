@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pats_project/components/leaderboard.dart';
 import 'package:pats_project/components/pattern_display.dart';
 import 'package:pats_project/components/tile_set_entry.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 
 List<Map> exampleData = [
   {
@@ -206,50 +207,94 @@ class _DemoScreenState extends State<DemoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Demo Screen'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            Row(children: [
-              const Padding(padding: EdgeInsets.fromLTRB(100, 150, 0, 0)),
-              Text(
-                'Demo Pattern',
-                style:
-                    TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
-              ),
-            ]),
-            Row(
-              children: [
-                SizedBox(
-                    child: PatternDisplay(x: 5, y: 5),
-                    width: MediaQuery.of(context).size.width / 3,
-                    height: MediaQuery.of(context).size.width / 3),
-                const Padding(padding: EdgeInsets.fromLTRB(150, 0, 0, 0)),
-                widget.isTileEntryVisible
-                    ? SizedBox(
-                        child: TileSetEntry(
-                          hideTileSetEntry: hideTileSetEntry,
-                          exampleData: exampleData,
-                          updateData: updateData,
-                        ),
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: MediaQuery.of(context).size.width / 3)
-                    : SizedBox(
-                        child: Leaderboard(
-                          listData: exampleData,
-                          onAddEntry: showTileSetEntry,
-                        ),
-                        width: MediaQuery.of(context).size.width / 3,
-                        height: MediaQuery.of(context).size.width / 3,
-                      ),
-              ],
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-          ],
+        appBar: AppBar(
+          title: const Text('Demo Screen'),
         ),
-      ),
-    );
+        body: LayoutGrid(
+          areas: '''
+         . .             .             . .            .
+         . patternHeader patternHeader . .            .
+         . pattern       pattern       . leaderboard  .
+         . pattern       pattern       . leaderboard  .
+         . footer        footer        . .            .
+        ''',
+          columnSizes: [0.1.fr, 1.fr, auto, 10.px, 1.fr, 100.px],
+          rowSizes: [
+            40.px,
+            100.px,
+            1.fr,
+            auto,
+            100.px,
+          ],
+          // Column and row gaps! 🔥
+          columnGap: 12,
+          rowGap: 12,
+          children: [
+            Text(
+              'Square',
+              style:
+                  TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
+            ).inGridArea('patternHeader'),
+            SizedBox(
+              child: PatternDisplay(
+                x: 5,
+                y: 5,
+              ),
+              width: MediaQuery.of(context).size.width / 2.5,
+            ).inGridArea('pattern'),
+            widget.isTileEntryVisible
+                ? TileSetEntry(
+                    hideTileSetEntry: hideTileSetEntry,
+                    exampleData: exampleData,
+                    updateData: updateData,
+                  ).inGridArea('leaderboard')
+                : Leaderboard(
+                    listData: exampleData,
+                    onAddEntry: showTileSetEntry,
+                  ).inGridArea('leaderboard'),
+          ],
+        )
+        // Center(
+        //   child: Column(
+        //     children: [
+        //       Row(children: [
+        //         const Padding(padding: EdgeInsets.fromLTRB(100, 150, 0, 0)),
+        //         Text(
+        //           'Demo Pattern',
+        //           style:
+        //               TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
+        //         ),
+        //       ]),
+        //       Row(
+        //         children: [
+        //           SizedBox(
+        //               child: PatternDisplay(x: 5, y: 5),
+        //               width: MediaQuery.of(context).size.width / 3,
+        //               height: MediaQuery.of(context).size.width / 3),
+        //           const Padding(padding: EdgeInsets.fromLTRB(150, 0, 0, 0)),
+        //           widget.isTileEntryVisible
+        //               ? SizedBox(
+        //                   child: TileSetEntry(
+        //                     hideTileSetEntry: hideTileSetEntry,
+        //                     exampleData: exampleData,
+        //                     updateData: updateData,
+        //                   ),
+        //                   width: MediaQuery.of(context).size.width / 3,
+        //                   height: MediaQuery.of(context).size.width / 3)
+        //               : SizedBox(
+        //                   child: Leaderboard(
+        //                     listData: exampleData,
+        //                     onAddEntry: showTileSetEntry,
+        //                   ),
+        //                   width: MediaQuery.of(context).size.width / 3,
+        //                   height: MediaQuery.of(context).size.width / 3,
+        //                 ),
+        //         ],
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        );
   }
 }
