@@ -22,7 +22,18 @@ class _TileSetEntryState extends State<TileSetEntry> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Tile Set Entry: "),
+        Text(
+          "Tile Set Entry",
+          style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.01,
+              fontWeight: FontWeight.bold),
+        ),
+        Padding(padding: EdgeInsets.fromLTRB(0, 50, 0, 0)),
+        TextField(
+          decoration:
+              InputDecoration(alignLabelWithHint: true, label: Text("Name")),
+          onChanged: (value) {},
+        ),
         TileContainer(),
         Row(
           children: [
