@@ -6,6 +6,10 @@ import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pats_project/pages/pattern_home_page.dart';
 import 'package:pats_project/pages/view_pattern_page.dart';
+// Import the firebase_core and cloud_firestore plugin
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'firebase_options.dart';
 
 List<Map> exampleData = [
   {
@@ -141,7 +145,13 @@ List<Map> exampleData = [
   }
 ];
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   exampleData
       .sort((a, b) => (a['tileSet'].length).compareTo(b['tileSet'].length));
 
@@ -166,8 +176,13 @@ class MyApp extends StatelessWidget {
         builder: (context, state) => const PatternHomePage(),
       ),
       GoRoute(
-        path: '/pattern',
-        builder: (context, state) => DemoScreen(),
+        path: '/patterns/:pattern',
+        builder: (context, state) {
+          final pattern = state.params['pattern'];
+          return DemoScreen(
+            pattern: pattern,
+          );
+        },
       )
     ],
   );
@@ -175,7 +190,9 @@ class MyApp extends StatelessWidget {
 
 class DemoScreen extends StatefulWidget {
   bool isTileEntryVisible;
-  DemoScreen({Key? key, this.isTileEntryVisible = false}) : super(key: key);
+  String? pattern;
+  DemoScreen({Key? key, this.isTileEntryVisible = false, required this.pattern})
+      : super(key: key);
 
   @override
   _DemoScreenState createState() => _DemoScreenState();
@@ -212,7 +229,17 @@ class _DemoScreenState extends State<DemoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Demo Screen'),
+          title: InkWell(
+            child: Text("PATS PROJECT"),
+            onTap: () {
+              context.go('/');
+            },
+            splashColor: Colors.transparent,
+            enableFeedback: false,
+            splashFactory: NoSplash.splashFactory,
+            hoverColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
         ),
         body: LayoutGrid(
           areas: '''
