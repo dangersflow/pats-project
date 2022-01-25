@@ -4,6 +4,7 @@ import 'package:pats_project/components/pattern_display.dart';
 import 'package:pats_project/components/tile_set_entry.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pats_project/pages/add_pattern_page.dart';
 import 'package:pats_project/pages/pattern_home_page.dart';
 import 'package:pats_project/pages/view_pattern_page.dart';
 // Import the firebase_core and cloud_firestore plugin
@@ -182,6 +183,13 @@ class MyApp extends StatelessWidget {
           return DemoScreen(
             pattern: pattern,
           );
+        },
+      ),
+      GoRoute(
+        path: '/add_pattern',
+        builder: (context, state) {
+          final pattern = state.params['pattern'];
+          return AddPatternPage();
         },
       )
     ],

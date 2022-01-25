@@ -39,7 +39,9 @@ class _PatternHomePageState extends State<PatternHomePage> {
         rowSizes: [0.2.fr, 1.fr, 1.fr, 1.5.fr, 0.3.fr, 0.15.fr],
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              context.go('/add_pattern');
+            },
             child: Text(
               '+',
               style: TextStyle(

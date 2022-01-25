@@ -28,32 +28,36 @@ class _PatternItemState extends State<PatternItem> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
+        child: Wrap(
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.2,
-              child: Image.network(
-                widget.imageUrl,
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-            const Divider(
-              thickness: 1,
-              color: Colors.black,
-            ),
-            Row(
+            Column(
               children: [
-                Text(
-                  widget.projectTitle,
-                  style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.010),
+                Container(
+                  child: Image.network(
+                    widget.imageUrl,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+                const Divider(
+                  thickness: 1,
+                  color: Colors.black,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      widget.projectTitle,
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.010),
+                    )
+                  ],
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                 )
               ],
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
             )
           ],
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         ),
       ),
     );
