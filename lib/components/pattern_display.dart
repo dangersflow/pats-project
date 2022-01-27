@@ -23,22 +23,14 @@ class _PatternDisplayState extends State<PatternDisplay> {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
       ),
+      reverse: true,
       itemBuilder: (context, index) {
-        if (index % widget.x == 0 || index > (widget.x * (widget.y - 1))) {
-          return Tile(
-            x: 100,
-            y: 100,
-            id: index,
-            color: "0xFF9A031E",
-          );
-        } else {
-          return Tile(
-            x: 100,
-            y: 100,
-            id: index,
-            color: "0xFF7CDEDC",
-          );
-        }
+        return Tile(
+          x: 100,
+          y: 100,
+          id: index + 1,
+          color: Color(0xFF7CDEDC),
+        );
       },
     );
   }
