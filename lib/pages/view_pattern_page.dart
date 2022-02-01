@@ -68,11 +68,11 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         ''',
           columnSizes: [0.2.fr, 1.fr, auto, auto, 1.fr, 0.2.fr],
           rowSizes: [
-            40.px,
-            100.px,
+            0.1.fr,
+            0.2.fr,
             1.fr,
-            auto,
-            100.px,
+            1.fr,
+            0.1.fr,
           ],
           // Column and row gaps! 🔥
           columnGap: 12,

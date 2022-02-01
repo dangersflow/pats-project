@@ -92,10 +92,10 @@ class _PatternSelectorState extends State<PatternSelector> {
             ],
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           ),
-          Padding(padding: EdgeInsets.fromLTRB(0, 50, 0, 0)),
           //add a gridview builder using the controllers
           Expanded(
             child: GridView.builder(
+              padding: EdgeInsets.fromLTRB(50, 0, 100, 0),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: int.parse(xController.text),
                 crossAxisSpacing: 10,
@@ -116,9 +116,6 @@ class _PatternSelectorState extends State<PatternSelector> {
               },
             ),
           ),
-          Padding(
-              padding: EdgeInsets.fromLTRB(
-                  0, 0, 0, MediaQuery.of(context).size.width * 0.03)),
         ],
       ),
     );

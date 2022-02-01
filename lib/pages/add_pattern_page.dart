@@ -48,11 +48,11 @@ class _AddPatternPageState extends State<AddPatternPage> {
         areas: '''
         . .               . .            .                .
         . header          . .            .                .
-        . patternSelector . tileSelector tileSelector     .
+        . patternSelector patternSelector tileSelector tileSelector     .
         . footer          . .            .                .
         ''',
-        columnSizes: [0.25.fr, 0.9.fr, 0.2.fr, 0.5.fr, 1.fr, 0.2.fr],
-        rowSizes: [0.05.fr, 0.15.fr, 1.fr, 0.2.fr],
+        columnSizes: [0.25.fr, 1.0.fr, 0.5.fr, 0.5.fr, 1.fr, 0.2.fr],
+        rowSizes: [0.05.fr, 0.10.fr, 1.fr, 0.1.fr],
         children: [
           Text(
             "Add a New Pattern",
