@@ -15,12 +15,20 @@ class _TileSelectorState extends State<TileSelector> {
   // create some values
   Color pickerColor = Color(0xff443a49);
   Color currentColor = Color(0xff443a49);
+  List<Tile> tilePool = [];
 
   // ValueChanged<Color> callback
   void changeColor(Color color) {
     setState(() => pickerColor = color);
     Tile tile = Tile(color: pickerColor);
     widget.changeCurrentTile!(tile);
+  }
+
+  void changeTileInPool(int index, Tile tile, int? lastSelectedTile) {
+    setState(() {
+      print(index.toString() + tile.toString());
+      tilePool[index] = tile;
+    });
   }
 
   @override
@@ -52,7 +60,13 @@ class _TileSelectorState extends State<TileSelector> {
                           children: [
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                                    tilePool.add(Tile(
+                                      color: pickerColor,
+                                    ));
+                                  });
+                                },
                                 style: ElevatedButton.styleFrom(
                                     shape: BeveledRectangleBorder()),
                                 child: Text("Add"),
@@ -69,7 +83,10 @@ class _TileSelectorState extends State<TileSelector> {
                   ),
                 ),
               ),
-              TilePool()
+              TilePool(
+                mainTilePool: tilePool,
+                changeTile: changeTileInPool,
+              )
             ],
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           ),

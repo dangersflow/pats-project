@@ -6,6 +6,7 @@ class Tile extends StatefulWidget {
   final double x, y;
   int id;
   bool showGlues;
+  bool showBorder;
 
   Tile(
       {Key? key,
@@ -14,7 +15,8 @@ class Tile extends StatefulWidget {
       this.x = 100,
       this.y = 100,
       this.id = 0,
-      this.showGlues = false})
+      this.showGlues = false,
+      this.showBorder = false})
       : super(key: key);
 
   Map toMap() {
@@ -28,6 +30,10 @@ class Tile extends StatefulWidget {
     };
   }
 
+  void setShowBorder(bool value) {
+    showBorder = value;
+  }
+
   @override
   _TileState createState() => _TileState();
 }
@@ -36,9 +42,13 @@ class _TileState extends State<Tile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: widget.color,
       width: widget.x,
       height: widget.y,
+      decoration: widget.showBorder == true
+          ? BoxDecoration(
+              border: Border.all(color: Colors.blueAccent, width: 5),
+              color: widget.color)
+          : BoxDecoration(color: widget.color),
       child: widget.showGlues
           ? Column(
               children: [
