@@ -3,7 +3,7 @@ import 'package:pats_project/components/tile.dart';
 
 class TilePool extends StatefulWidget {
   List<Tile> mainTilePool;
-  Function(int, Tile, int?)? changeTile;
+  Function(int, Tile, int, int)? changeTile;
   TilePool({Key? key, required this.mainTilePool, this.changeTile})
       : super(key: key);
 
@@ -12,7 +12,8 @@ class TilePool extends StatefulWidget {
 }
 
 class _TilePoolState extends State<TilePool> {
-  int lastSelectedTile = 0;
+  int lastSelectedTile = -1;
+  int currentlySelectedTile = -1;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -39,10 +40,11 @@ class _TilePoolState extends State<TilePool> {
                             color: currentTile.color,
                             showBorder: true,
                           );
-                          lastSelectedTile = index;
+                          lastSelectedTile = currentlySelectedTile;
+                          currentlySelectedTile = index;
                           setState(() {
-                            widget.changeTile!(
-                                index, newTile, lastSelectedTile);
+                            widget.changeTile!(index, newTile, lastSelectedTile,
+                                currentlySelectedTile);
                           });
                         },
                       );

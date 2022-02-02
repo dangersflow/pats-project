@@ -94,26 +94,28 @@ class _PatternSelectorState extends State<PatternSelector> {
           ),
           //add a gridview builder using the controllers
           Expanded(
-            child: GridView.builder(
-              padding: EdgeInsets.fromLTRB(50, 0, 100, 0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: int.parse(xController.text),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+            child: GestureDetector(
+              child: GridView.builder(
+                padding: EdgeInsets.fromLTRB(50, 0, 100, 0),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: int.parse(xController.text),
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                ),
+                reverse: true,
+                itemCount:
+                    int.parse(yController.text) * int.parse(xController.text),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    child: grid[index],
+                    onTap: () {
+                      setState(() {
+                        grid[index] = widget.currentlySelectedTile;
+                      });
+                    },
+                  );
+                },
               ),
-              reverse: true,
-              itemCount:
-                  int.parse(yController.text) * int.parse(xController.text),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  child: grid[index],
-                  onTap: () {
-                    setState(() {
-                      grid[index] = widget.currentlySelectedTile;
-                    });
-                  },
-                );
-              },
             ),
           ),
         ],

@@ -16,9 +16,9 @@ class _AddPatternPageState extends State<AddPatternPage> {
   List<Tile> tilePool = [];
   Tile currentlySelectedTile = Tile(color: Colors.black);
 
-  void changeCurrentTile(Tile tile) {
+  void changeCurrentTile(Color color) {
     setState(() {
-      currentlySelectedTile = tile;
+      currentlySelectedTile = Tile(color: color);
     });
   }
 

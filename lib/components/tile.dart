@@ -26,8 +26,21 @@ class Tile extends StatefulWidget {
       'x': x,
       'y': y,
       'id': id,
-      'showGlues': showGlues
+      'showGlues': showGlues,
+      'showBorder': showBorder
     };
+  }
+
+  String toStringValue() {
+    return {
+      'color': color.value,
+      'glues': glues,
+      'x': x,
+      'y': y,
+      'id': id,
+      'showGlues': showGlues,
+      'showBorder': showBorder
+    }.toString();
   }
 
   void setShowBorder(bool value) {

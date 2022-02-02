@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:motion_toast/resources/arrays.dart';
 import 'package:pats_project/components/tile.dart';
 import 'package:pats_project/components/tile_pool.dart';
 
 class TileSelector extends StatefulWidget {
-  Function(Tile)? changeCurrentTile;
+  Function(Color)? changeCurrentTile;
   TileSelector({Key? key, this.changeCurrentTile}) : super(key: key);
 
   @override
@@ -20,15 +24,33 @@ class _TileSelectorState extends State<TileSelector> {
   // ValueChanged<Color> callback
   void changeColor(Color color) {
     setState(() => pickerColor = color);
-    Tile tile = Tile(color: pickerColor);
-    widget.changeCurrentTile!(tile);
   }
 
-  void changeTileInPool(int index, Tile tile, int? lastSelectedTile) {
+  void changeTileInPool(
+      int index, Tile tile, int lastSelectedTile, int currentlySelectedTile) {
+    if (lastSelectedTile != -1) {
+      setState(() {
+        Tile currentTile = tilePool[lastSelectedTile];
+        Tile newTile = Tile(color: currentTile.color, showBorder: false);
+        //tilePool[lastSelectedTile].showBorder = false;
+        tilePool[lastSelectedTile] = newTile;
+        print(tilePool[lastSelectedTile].toStringValue());
+      });
+    }
     setState(() {
-      print(index.toString() + tile.toString());
+      print(index.toString() + tile.toStringValue());
       tilePool[index] = tile;
+      widget.changeCurrentTile!(tile.color);
     });
+  }
+
+  bool tileExists(Tile tile) {
+    for (Tile x in tilePool) {
+      if (x.color == tile.color) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
@@ -62,11 +84,23 @@ class _TileSelectorState extends State<TileSelector> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  setState(() {
-                                    tilePool.add(Tile(
-                                      color: pickerColor,
-                                    ));
-                                  });
+                                  Tile newTile = Tile(color: pickerColor);
+                                  if (!tileExists(newTile)) {
+                                    setState(() {
+                                      tilePool.add(Tile(
+                                        color: pickerColor,
+                                      ));
+                                    });
+                                  } else {
+                                    MotionToast.error(
+                                      description: Text("Tile Already Exists!"),
+                                      animationDuration:
+                                          Duration(milliseconds: 100),
+                                      animationCurve: Curves.easeInOutCubic,
+                                      toastDuration:
+                                          Duration(milliseconds: 1000),
+                                    ).show(context);
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                     shape: BeveledRectangleBorder()),
