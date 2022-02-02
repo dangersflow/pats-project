@@ -50,7 +50,8 @@ class _TileSelectorState extends State<TileSelector> {
                   child: Column(
                     children: [
                       ColorPicker(
-                        colorPickerWidth: 200,
+                        colorPickerWidth:
+                            MediaQuery.of(context).size.width * 0.13,
                         pickerColor: pickerColor,
                         onColorChanged: changeColor,
                         hexInputBar: true,
@@ -69,7 +70,13 @@ class _TileSelectorState extends State<TileSelector> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                     shape: BeveledRectangleBorder()),
-                                child: Text("Add"),
+                                child: Text(
+                                  "Add",
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.018),
+                                ),
                               ),
                             ),
                           ],
