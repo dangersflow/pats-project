@@ -3,7 +3,19 @@ import 'package:pats_project/components/tile.dart';
 
 class PatternSelector extends StatefulWidget {
   Tile currentlySelectedTile;
-  PatternSelector({Key? key, required this.currentlySelectedTile})
+  List<Tile> grid;
+  Function(int, int) createGrid;
+  Function(int, int) changeGridSize;
+  TextEditingController xController;
+  TextEditingController yController;
+  PatternSelector(
+      {Key? key,
+      required this.currentlySelectedTile,
+      required this.grid,
+      required this.createGrid,
+      required this.changeGridSize,
+      required this.xController,
+      required this.yController})
       : super(key: key);
 
   @override
@@ -11,43 +23,22 @@ class PatternSelector extends StatefulWidget {
 }
 
 class _PatternSelectorState extends State<PatternSelector> {
-  TextEditingController xController = TextEditingController();
-  TextEditingController yController = TextEditingController();
-  List<Tile> grid = [];
+  //TextEditingController xController = TextEditingController();
+  //TextEditingController yController = TextEditingController();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     //set the controllers to a default value
-    xController.text = '5';
-    yController.text = '5';
+    setState(() {
+      widget.xController.text = '5';
+      widget.yController.text = '5';
+    });
 
     //create a grid of grey tiles into the grid list
-    for (int i = 0;
-        i < int.parse(xController.text) * int.parse(yController.text);
-        i++) {
-      grid.add(Tile(
-        color: Colors.grey,
-        id: i + 1,
-        showGlues: true,
-      ));
-    }
-  }
-
-  void changeGridSize() {
-    setState(() {
-      grid = [];
-      for (int i = 0;
-          i < int.parse(xController.text) * int.parse(yController.text);
-          i++) {
-        grid.add(Tile(
-          color: Colors.grey,
-          id: i + 1,
-          showGlues: true,
-        ));
-      }
-    });
+    widget.createGrid(
+        int.parse(widget.xController.text), int.parse(widget.yController.text));
   }
 
   @override
@@ -59,32 +50,40 @@ class _PatternSelectorState extends State<PatternSelector> {
             children: [
               SizedBox(
                 child: TextField(
-                  controller: xController,
-                  decoration: InputDecoration(
-                      alignLabelWithHint: true, label: Text("X Value")),
+                  controller: widget.xController,
+                  decoration: const InputDecoration(
+                      alignLabelWithHint: true,
+                      label: Text("X Value"),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 5.0),
+                      )),
                   onSubmitted: (value) {
                     setState(() {
-                      xController.text = value;
-                      yController.text = value;
+                      widget.xController.text = value;
+                      widget.yController.text = value;
                     });
-                    changeGridSize();
+                    widget.changeGridSize(int.parse(widget.xController.text),
+                        int.parse(widget.yController.text));
                   },
                 ),
                 width: MediaQuery.of(context).size.width * 0.1,
               ),
               SizedBox(
                 child: TextField(
-                  controller: yController,
-                  decoration: InputDecoration(
-                    alignLabelWithHint: true,
-                    label: Text("Y Value"),
-                  ),
+                  controller: widget.yController,
+                  decoration: const InputDecoration(
+                      alignLabelWithHint: true,
+                      label: Text("Y Value"),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 5.0),
+                      )),
                   onSubmitted: (value) {
                     setState(() {
-                      xController.text = value;
-                      yController.text = value;
+                      widget.xController.text = value;
+                      widget.yController.text = value;
                     });
-                    changeGridSize();
+                    widget.changeGridSize(int.parse(widget.xController.text),
+                        int.parse(widget.yController.text));
                   },
                 ),
                 width: MediaQuery.of(context).size.width * 0.1,
@@ -96,21 +95,21 @@ class _PatternSelectorState extends State<PatternSelector> {
           Expanded(
             child: GestureDetector(
               child: GridView.builder(
-                padding: EdgeInsets.fromLTRB(50, 0, 100, 0),
+                padding: const EdgeInsets.fromLTRB(80, 0, 80, 0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: int.parse(xController.text),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+                  crossAxisCount: int.parse(widget.xController.text),
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
                 ),
                 reverse: true,
-                itemCount:
-                    int.parse(yController.text) * int.parse(xController.text),
+                itemCount: int.parse(widget.yController.text) *
+                    int.parse(widget.xController.text),
                 itemBuilder: (context, index) {
                   return GestureDetector(
-                    child: grid[index],
+                    child: widget.grid[index],
                     onTap: () {
                       setState(() {
-                        grid[index] = widget.currentlySelectedTile;
+                        widget.grid[index] = widget.currentlySelectedTile;
                       });
                     },
                   );
