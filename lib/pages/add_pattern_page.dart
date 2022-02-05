@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:go_router/go_router.dart';
@@ -147,8 +149,12 @@ class _AddPatternPageState extends State<AddPatternPage> {
             xController: xController,
             yController: yController,
           ).inGridArea('patternSelector'),
-          TileSelector(
-            changeCurrentTile: changeCurrentTile,
+          Wrap(
+            children: [
+              TileSelector(
+                changeCurrentTile: changeCurrentTile,
+              )
+            ],
           ).inGridArea('tileSelector'),
           Column(
             children: [

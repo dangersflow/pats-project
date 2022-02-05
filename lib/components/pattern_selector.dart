@@ -25,6 +25,7 @@ class PatternSelector extends StatefulWidget {
 class _PatternSelectorState extends State<PatternSelector> {
   //TextEditingController xController = TextEditingController();
   //TextEditingController yController = TextEditingController();
+  int maxSize = 500;
 
   @override
   void initState() {
@@ -92,14 +93,16 @@ class _PatternSelectorState extends State<PatternSelector> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           ),
           //add a gridview builder using the controllers
-          Expanded(
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            width: MediaQuery.of(context).size.width * 0.37,
             child: GestureDetector(
               child: GridView.builder(
-                padding: const EdgeInsets.fromLTRB(80, 0, 80, 0),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: int.parse(widget.xController.text),
                   crossAxisSpacing: 5,
                   mainAxisSpacing: 5,
+                  childAspectRatio: 1,
                 ),
                 reverse: true,
                 itemCount: int.parse(widget.yController.text) *
@@ -118,6 +121,7 @@ class _PatternSelectorState extends State<PatternSelector> {
             ),
           ),
         ],
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       ),
     );
   }
