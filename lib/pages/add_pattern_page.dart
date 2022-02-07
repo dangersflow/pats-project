@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
@@ -7,10 +9,12 @@ import 'package:pats_project/components/pattern_selector.dart';
 import 'package:pats_project/components/tile.dart';
 import 'package:pats_project/components/tile_selector.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:screenshot/screenshot.dart';
 
 // Import the firebase_core and cloud_firestore plugin
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class AddPatternPage extends StatefulWidget {
   const AddPatternPage({Key? key}) : super(key: key);
@@ -27,6 +31,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController xController = TextEditingController();
   TextEditingController yController = TextEditingController();
+  ScreenshotController screenshotController = ScreenshotController();
 
   void changeCurrentTile(Color color) {
     setState(() {
@@ -73,12 +78,64 @@ class _AddPatternPageState extends State<AddPatternPage> {
     // Create a CollectionReference called users that references the firestore collection
     CollectionReference patterns =
         FirebaseFirestore.instance.collection('patterns');
+    CollectionReference patterns_home =
+        FirebaseFirestore.instance.collection('patterns_homepage');
+    firebase_storage.FirebaseStorage storage =
+        firebase_storage.FirebaseStorage.instance;
+    String currentImageKey = '';
+    String currentImageUrl = '';
 
-    Future<void> addPattern() {
+    Uint8List _image;
+    //generate random string name
+    String randomString(int length) {
+      var rand = new Random();
+      var codeUnits = new List.generate(length, (index) {
+        return rand.nextInt(33) + 89;
+      });
+      return new String.fromCharCodes(codeUnits);
+    }
+
+    Future<void> uploadImageToStorage(Uint8List image) async {
+      try {
+        currentImageKey = randomString(10) + '.png';
+        await storage
+            .ref()
+            .child(currentImageKey)
+            .putData(image)
+            .then((p0) async {
+          String imageUrl = await p0.ref.getDownloadURL();
+          currentImageUrl = imageUrl;
+          print(imageUrl);
+        });
+      } on firebase_core.FirebaseException catch (e) {
+        print(e);
+      }
+    }
+
+    Future<void> addPattern() async {
+      //screenshot our grid
+      await screenshotController.capture().then((image) async {
+        await uploadImageToStorage(image!);
+        //display the image in an alert dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Pattern Image'),
+              content: Image.memory(image),
+            );
+          },
+        );
+      });
       //convert current grid to map
       convertGridToMap();
       // Call the user's CollectionReference to add a new user
-      return patterns.add({
+      patterns_home.add({
+        'image': currentImageUrl,
+        'name': nameController.text,
+        'project_name': nameController.text,
+      });
+      patterns.add({
         'keyPattern': nameController.text, // John Doe// 42
         'pattern_dimension_x': int.parse(xController.text),
         'pattern_dimension_y': int.parse(xController.text),
@@ -108,6 +165,33 @@ class _AddPatternPageState extends State<AddPatternPage> {
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              addPattern();
+            },
+          ),
+          //icon button to clear board
+          IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              setState(() {
+                grid = [];
+                for (int i = 0;
+                    i <
+                        int.parse(xController.text) *
+                            int.parse(yController.text);
+                    i++) {
+                  grid.add(Tile(
+                    color: Colors.grey,
+                    id: i + 1,
+                  ));
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: LayoutGrid(
         areas: '''
@@ -148,6 +232,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
             changeGridSize: changeGridSize,
             xController: xController,
             yController: yController,
+            screenshotController: screenshotController,
           ).inGridArea('patternSelector'),
           Wrap(
             children: [
@@ -156,34 +241,6 @@ class _AddPatternPageState extends State<AddPatternPage> {
               )
             ],
           ).inGridArea('tileSelector'),
-          Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                      child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Clear Board",
-                            style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.018),
-                          ))),
-                  Expanded(
-                      child: ElevatedButton(
-                          onPressed: addPattern,
-                          child: Text(
-                            "Add Pattern",
-                            style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.018),
-                          )))
-                ],
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
-          ).inGridArea('footer'),
         ],
       ),
     );

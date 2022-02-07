@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:pats_project/components/tile.dart';
@@ -19,6 +20,7 @@ class _TileSelectorState extends State<TileSelector> {
   // create some values
   Color pickerColor = Color(0xff443a49);
   Color currentColor = Color(0xff443a49);
+  TextEditingController textController = TextEditingController();
   List<Tile> tilePool = [];
 
   // ValueChanged<Color> callback
@@ -69,58 +71,60 @@ class _TileSelectorState extends State<TileSelector> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   elevation: 10,
-                  child: Column(
+                  child: LayoutGrid(
+                    areas: '''
+                    colorPicker
+                    colorPicker
+                    colorPicker
+                    button        
+                    ''',
+                    columnSizes: [1.fr],
+                    rowSizes: [1.fr, 1.fr, 1.fr, 0.7.fr],
                     children: [
                       ColorPicker(
-                        colorPickerWidth:
-                            MediaQuery.of(context).size.width * 0.13,
                         pickerColor: pickerColor,
                         onColorChanged: changeColor,
                         hexInputBar: true,
-                      ),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Tile newTile = Tile(color: pickerColor);
-                                  if (!tileExists(newTile)) {
-                                    setState(() {
-                                      tilePool.add(Tile(
-                                        color: pickerColor,
-                                      ));
-                                    });
-                                  } else {
-                                    MotionToast.error(
-                                      description: Text("Tile Already Exists!"),
-                                      animationDuration:
-                                          Duration(milliseconds: 100),
-                                      animationCurve: Curves.easeInOutCubic,
-                                      toastDuration:
-                                          Duration(milliseconds: 1000),
-                                    ).show(context);
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    shape: BeveledRectangleBorder()),
-                                child: Text(
-                                  "Add",
-                                  style: TextStyle(
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.018),
-                                ),
+                        hexInputController: textController,
+                      ).inGridArea('colorPicker'),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Tile newTile = Tile(color: pickerColor);
+                                if (!tileExists(newTile)) {
+                                  setState(() {
+                                    tilePool.add(Tile(
+                                      color: pickerColor,
+                                    ));
+                                  });
+                                } else {
+                                  MotionToast.error(
+                                    description: Text("Tile Already Exists!"),
+                                    animationDuration:
+                                        Duration(milliseconds: 100),
+                                    animationCurve: Curves.easeInOutCubic,
+                                    toastDuration: Duration(milliseconds: 1000),
+                                  ).show(context);
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  shape: BeveledRectangleBorder()),
+                              child: Text(
+                                "Add",
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.018),
                               ),
                             ),
-                          ],
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                        ),
-                      )
+                          ),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                      ).inGridArea('button'),
                     ],
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                   ),
                 ),
               ),

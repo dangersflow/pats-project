@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:pats_project/components/tile.dart';
+import 'package:screenshot/screenshot.dart';
 
 class PatternSelector extends StatefulWidget {
   Tile currentlySelectedTile;
@@ -8,6 +10,7 @@ class PatternSelector extends StatefulWidget {
   Function(int, int) changeGridSize;
   TextEditingController xController;
   TextEditingController yController;
+  ScreenshotController screenshotController;
   PatternSelector(
       {Key? key,
       required this.currentlySelectedTile,
@@ -15,7 +18,8 @@ class PatternSelector extends StatefulWidget {
       required this.createGrid,
       required this.changeGridSize,
       required this.xController,
-      required this.yController})
+      required this.yController,
+      required this.screenshotController})
       : super(key: key);
 
   @override
@@ -45,9 +49,27 @@ class _PatternSelectorState extends State<PatternSelector> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        children: [
-          Row(
+      child: LayoutGrid(areas: '''
+      .  fields .
+      .  grid .
+      .  grid .
+      .  grid .
+      .  grid .
+      .  grid .
+''', columnSizes: [
+        0.1.fr,
+        1.fr,
+        0.1.fr,
+      ], rowSizes: [
+        0.5.fr,
+        1.fr,
+        1.fr,
+        1.fr,
+        1.fr,
+        1.fr
+      ], children: [
+        Center(
+          child: Row(
             children: [
               SizedBox(
                 child: TextField(
@@ -92,37 +114,35 @@ class _PatternSelectorState extends State<PatternSelector> {
             ],
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           ),
-          //add a gridview builder using the controllers
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            width: MediaQuery.of(context).size.width * 0.37,
-            child: GestureDetector(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: int.parse(widget.xController.text),
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                  childAspectRatio: 1,
-                ),
-                reverse: true,
-                itemCount: int.parse(widget.yController.text) *
-                    int.parse(widget.xController.text),
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    child: widget.grid[index],
-                    onTap: () {
-                      setState(() {
-                        widget.grid[index] = widget.currentlySelectedTile;
-                      });
-                    },
-                  );
-                },
+        ).inGridArea('fields'),
+        //add a gridview builder using the controllers
+        Screenshot(
+          controller: widget.screenshotController,
+          child: GestureDetector(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: int.parse(widget.xController.text),
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+                childAspectRatio: 1,
               ),
+              reverse: true,
+              itemCount: int.parse(widget.yController.text) *
+                  int.parse(widget.xController.text),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  child: widget.grid[index],
+                  onTap: () {
+                    setState(() {
+                      widget.grid[index] = widget.currentlySelectedTile;
+                    });
+                  },
+                );
+              },
             ),
           ),
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      ),
+        ).inGridArea('grid'),
+      ]),
     );
   }
 }
