@@ -17,24 +17,26 @@ class _LeaderboardState extends State<Leaderboard> {
   void initState() {
     //implement initState
     super.initState();
-
-    print(widget.listData[0]['tileSet']);
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: widget.listData.length,
-            itemBuilder: (context, index) {
-              return LeaderboardTile(
-                  index: index + 1,
-                  name: widget.listData[index]['user'],
-                  tiles: widget.listData[index]['tileSet']);
-              /*ListTile(
+        widget.listData.length < 1
+            ? Center(
+                child: Text("Take a shot at building this pattern!"),
+              )
+            : Expanded(
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: widget.listData.length,
+                  itemBuilder: (context, index) {
+                    return LeaderboardTile(
+                        index: index + 1,
+                        name: widget.listData[index]['user'],
+                        tiles: widget.listData[index]['tileSet']);
+                    /*ListTile(
                 title: Text(
                   '${index + 1}. ${widget.listData[index]['user']}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -44,9 +46,9 @@ class _LeaderboardState extends State<Leaderboard> {
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ); */
-            },
-          ),
-        ),
+                  },
+                ),
+              ),
         Row(
           children: [
             InkWell(

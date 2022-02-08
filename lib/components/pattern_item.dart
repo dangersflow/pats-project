@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PatternItem extends StatefulWidget {
   final String imageUrl;
@@ -33,9 +34,15 @@ class _PatternItemState extends State<PatternItem> {
             Column(
               children: [
                 Container(
-                  child: Image.network(
-                    widget.imageUrl,
+                  // child: Image.network(
+                  //   widget.imageUrl,
+                  //   fit: BoxFit.fitWidth,
+                  // ),
+                  child: CachedNetworkImage(
+                    imageUrl: widget.imageUrl,
                     fit: BoxFit.fitWidth,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
                 const Divider(

@@ -1,13 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pats_project/components/leaderboard.dart';
 import 'package:pats_project/components/pattern_display.dart';
 import 'package:pats_project/components/tile_set_entry.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pats_project/components/tile.dart';
+
+// Import the firebase_core and cloud_firestore plugin
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ViewPatternPage extends StatefulWidget {
   bool isTileEntryVisible;
-  ViewPatternPage({Key? key, this.isTileEntryVisible = false})
+  String? projectKey;
+  ViewPatternPage(
+      {Key? key, this.isTileEntryVisible = false, required this.projectKey})
       : super(key: key);
 
   @override
@@ -15,11 +24,46 @@ class ViewPatternPage extends StatefulWidget {
 }
 
 class _ViewPatternPageState extends State<ViewPatternPage> {
-  List<Map> exampleData = [];
+  List<Tile> tilePool = [];
+  List<Map> leaderboard = [];
+  List<Map> grid = [];
+  int x = 1;
+  int y = 1;
+  String name = '';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getData();
+  }
+
+  Future<void> getData() async {
+    await FirebaseFirestore.instance
+        .collection('patterns')
+        .where('keyPattern', isEqualTo: widget.projectKey!)
+        .get()
+        .then((value) {
+      var jsonData = jsonEncode(value.docs.first.data().toString());
+      var decodedData = jsonDecode(jsonData);
+
+      setState(() {
+        List<dynamic>.from(value.docs.first.data()['grid']).forEach((element) {
+          grid.add(element);
+        });
+      });
+      setState(() {
+        List<dynamic>.from(value.docs.first.data()['leaderboard'])
+            .forEach((element) {
+          leaderboard.add(element);
+        });
+      });
+      setState(() {
+        x = value.docs[0].get('pattern_dimension_x');
+        y = value.docs[0].get('pattern_dimension_y');
+        name = value.docs[0].get('keyPattern');
+      });
+    });
   }
 
   void showTileSetEntry() {
@@ -36,8 +80,8 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
 
   void updateData(List<Map> data) {
     setState(() {
-      exampleData = data;
-      exampleData
+      leaderboard = data;
+      leaderboard
           .sort((a, b) => (a['tileSet'].length).compareTo(b['tileSet'].length));
     });
   }
@@ -79,12 +123,13 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
           rowGap: 12,
           children: [
             Text(
-              'Square',
+              name,
               style:
                   TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
             ).inGridArea('patternHeader'),
             SizedBox(
               child: PatternDisplay(
+                grid: grid,
                 x: 5,
                 y: 5,
               ),
@@ -93,11 +138,11 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
             widget.isTileEntryVisible
                 ? TileSetEntry(
                     hideTileSetEntry: hideTileSetEntry,
-                    exampleData: exampleData,
+                    exampleData: leaderboard,
                     updateData: updateData,
                   ).inGridArea('leaderboard')
                 : Leaderboard(
-                    listData: exampleData,
+                    listData: leaderboard,
                     onAddEntry: showTileSetEntry,
                   ).inGridArea('leaderboard'),
           ],

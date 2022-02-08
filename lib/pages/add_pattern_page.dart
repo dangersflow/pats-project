@@ -117,15 +117,16 @@ class _AddPatternPageState extends State<AddPatternPage> {
       await screenshotController.capture().then((image) async {
         await uploadImageToStorage(image!);
         //display the image in an alert dialog
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Pattern Image'),
-              content: Image.memory(image),
-            );
-          },
-        );
+        // showDialog(
+        //   context: context,
+        //   builder: (BuildContext context) {
+        //     return AlertDialog(
+        //       title: Text('Pattern Image'),
+        //       content: Image.memory(image),
+        //     );
+        //   },
+        // );
+        context.go('/');
       });
       //convert current grid to map
       convertGridToMap();

@@ -180,9 +180,7 @@ class MyApp extends StatelessWidget {
         path: '/patterns/:pattern',
         builder: (context, state) {
           final pattern = state.params['pattern'];
-          return DemoScreen(
-            pattern: pattern,
-          );
+          return ViewPatternPage(projectKey: pattern);
         },
       ),
       GoRoute(
