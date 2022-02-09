@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:pats_project/components/leaderboard.dart';
 import 'package:pats_project/components/pattern_display.dart';
@@ -135,16 +136,28 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
               ),
               width: MediaQuery.of(context).size.width / 3,
             ).inGridArea('pattern'),
-            widget.isTileEntryVisible
-                ? TileSetEntry(
-                    hideTileSetEntry: hideTileSetEntry,
-                    exampleData: leaderboard,
-                    updateData: updateData,
-                  ).inGridArea('leaderboard')
-                : Leaderboard(
-                    listData: leaderboard,
-                    onAddEntry: showTileSetEntry,
-                  ).inGridArea('leaderboard'),
+            PageTransitionSwitcher(
+                duration: const Duration(milliseconds: 300),
+                reverse: !widget.isTileEntryVisible,
+                child: widget.isTileEntryVisible
+                    ? TileSetEntry(
+                        hideTileSetEntry: hideTileSetEntry,
+                        exampleData: leaderboard,
+                        updateData: updateData,
+                      )
+                    : Leaderboard(
+                        listData: leaderboard,
+                        onAddEntry: showTileSetEntry,
+                      ),
+                transitionBuilder:
+                    (child, primaryAnimation, secondaryAnimation) {
+                  return SharedAxisTransition(
+                    animation: primaryAnimation,
+                    secondaryAnimation: secondaryAnimation,
+                    transitionType: SharedAxisTransitionType.horizontal,
+                    child: child,
+                  );
+                }).inGridArea('leaderboard')
           ],
         )
         // Center(
