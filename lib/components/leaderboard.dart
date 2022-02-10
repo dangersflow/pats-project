@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:pats_project/components/leaderboard_tile.dart';
 import 'package:pats_project/components/tile_container.dart';
 
@@ -21,12 +22,22 @@ class _LeaderboardState extends State<Leaderboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return LayoutGrid(
+      areas: '''
+      leaderboard
+      leaderboard
+      leaderboard
+      leaderboard
+      leaderboard
+      button
+      ''',
+      columnSizes: [1.fr],
+      rowSizes: [1.fr, 1.fr, 1.fr, 1.fr, 1.fr, 1.fr],
       children: [
         widget.listData.length < 1
             ? Center(
                 child: Text("Take a shot at building this pattern!"),
-              )
+              ).inGridArea('leaderboard')
             : Expanded(
                 child: ListView.builder(
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -48,17 +59,13 @@ class _LeaderboardState extends State<Leaderboard> {
               ); */
                   },
                 ),
-              ),
+              ).inGridArea('leaderboard'),
+        //make a row with an elevated button that expands to its available space
         Row(
           children: [
-            InkWell(
-              child: Container(
-                child: const Text("Add Entry"),
-                padding: const EdgeInsets.all(10),
-              ),
-              onTap: widget.onAddEntry,
-              borderRadius: BorderRadius.circular(10),
-            )
+            Expanded(
+                child: ElevatedButton(
+                    child: Text("Add Entry"), onPressed: widget.onAddEntry)),
           ],
         )
       ],

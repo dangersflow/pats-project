@@ -8,6 +8,7 @@ import 'package:pats_project/components/tile_set_entry.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pats_project/components/tile.dart';
+import 'package:animate_do/animate_do.dart';
 
 // Import the firebase_core and cloud_firestore plugin
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
@@ -31,6 +32,12 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   int x = 1;
   int y = 1;
   String name = '';
+
+  //bool flags for loading the tilePool, leaderboard, and grid
+  bool tilePoolLoaded = false;
+  bool leaderboardLoaded = false;
+  bool gridLoaded = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -52,12 +59,14 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         List<dynamic>.from(value.docs.first.data()['grid']).forEach((element) {
           grid.add(element);
         });
+        gridLoaded = true;
       });
       setState(() {
         List<dynamic>.from(value.docs.first.data()['leaderboard'])
             .forEach((element) {
           leaderboard.add(element);
         });
+        leaderboardLoaded = true;
       });
       setState(() {
         x = value.docs[0].get('pattern_dimension_x');
@@ -128,13 +137,25 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
               style:
                   TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
             ).inGridArea('patternHeader'),
-            SizedBox(
-              child: PatternDisplay(
-                grid: grid,
-                x: 5,
-                y: 5,
+            AnimatedOpacity(
+              opacity: gridLoaded ? 1 : 0,
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOutExpo,
+              child: AnimatedContainer(
+                margin: gridLoaded
+                    ? EdgeInsets.fromLTRB(0, 0, 0, 0)
+                    : EdgeInsets.fromLTRB(0, 50, 0, 0),
+                duration: Duration(milliseconds: 400),
+                curve: Curves.easeInOutExpo,
+                child: SizedBox(
+                  child: PatternDisplay(
+                    grid: grid,
+                    x: x,
+                    y: y,
+                  ),
+                  width: MediaQuery.of(context).size.width / 3,
+                ),
               ),
-              width: MediaQuery.of(context).size.width / 3,
             ).inGridArea('pattern'),
             PageTransitionSwitcher(
                 duration: const Duration(milliseconds: 300),
