@@ -48,101 +48,91 @@ class _PatternSelectorState extends State<PatternSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: LayoutGrid(areas: '''
-      .  fields .
-      .  grid .
-      .  grid .
-      .  grid .
-      .  grid .
-      .  grid .
+    return LayoutGrid(areas: '''
+    fields
+    grid
 ''', columnSizes: [
-        0.1.fr,
-        1.fr,
-        0.1.fr,
-      ], rowSizes: [
-        0.5.fr,
-        1.fr,
-        1.fr,
-        1.fr,
-        1.fr,
-        1.fr
-      ], children: [
-        Center(
-          child: Row(
-            children: [
-              SizedBox(
-                child: TextField(
-                  controller: widget.xController,
-                  decoration: const InputDecoration(
-                      alignLabelWithHint: true,
-                      label: Text("X Value"),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 5.0),
-                      )),
-                  onSubmitted: (value) {
-                    setState(() {
-                      widget.xController.text = value;
-                      widget.yController.text = value;
-                    });
-                    widget.changeGridSize(int.parse(widget.xController.text),
-                        int.parse(widget.yController.text));
-                  },
-                ),
-                width: MediaQuery.of(context).size.width * 0.1,
+      1.fr
+    ], rowSizes: [
+      0.1.fr,
+      1.fr,
+    ], children: [
+      Center(
+        child: Row(
+          children: [
+            SizedBox(
+              child: TextField(
+                controller: widget.xController,
+                decoration: const InputDecoration(
+                    alignLabelWithHint: true,
+                    label: Text("X Value"),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 5.0),
+                    )),
+                onSubmitted: (value) {
+                  setState(() {
+                    widget.xController.text = value;
+                    widget.yController.text = value;
+                  });
+                  widget.changeGridSize(int.parse(widget.xController.text),
+                      int.parse(widget.yController.text));
+                },
               ),
-              SizedBox(
-                child: TextField(
-                  controller: widget.yController,
-                  decoration: const InputDecoration(
-                      alignLabelWithHint: true,
-                      label: Text("Y Value"),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 5.0),
-                      )),
-                  onSubmitted: (value) {
-                    setState(() {
-                      widget.xController.text = value;
-                      widget.yController.text = value;
-                    });
-                    widget.changeGridSize(int.parse(widget.xController.text),
-                        int.parse(widget.yController.text));
-                  },
-                ),
-                width: MediaQuery.of(context).size.width * 0.1,
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          ),
-        ).inGridArea('fields'),
-        //add a gridview builder using the controllers
-        Screenshot(
-          controller: widget.screenshotController,
-          child: GestureDetector(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: int.parse(widget.xController.text),
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-                childAspectRatio: 1,
-              ),
-              reverse: true,
-              itemCount: int.parse(widget.yController.text) *
-                  int.parse(widget.xController.text),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  child: widget.grid[index],
-                  onTap: () {
-                    setState(() {
-                      widget.grid[index] = widget.currentlySelectedTile;
-                    });
-                  },
-                );
-              },
+              width: MediaQuery.of(context).size.width * 0.1,
             ),
+            SizedBox(
+              child: TextField(
+                controller: widget.yController,
+                decoration: const InputDecoration(
+                    alignLabelWithHint: true,
+                    label: Text("Y Value"),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 5.0),
+                    )),
+                onSubmitted: (value) {
+                  setState(() {
+                    widget.xController.text = value;
+                    widget.yController.text = value;
+                  });
+                  widget.changeGridSize(int.parse(widget.xController.text),
+                      int.parse(widget.yController.text));
+                },
+              ),
+              width: MediaQuery.of(context).size.width * 0.1,
+            ),
+          ],
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        ),
+      ).inGridArea('fields'),
+      //add a gridview builder using the controllers
+      Screenshot(
+        controller: widget.screenshotController,
+        child: GestureDetector(
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: int.parse(widget.xController.text),
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
+              childAspectRatio: 1,
+            ),
+            reverse: true,
+            itemCount: int.parse(widget.yController.text) *
+                int.parse(widget.xController.text),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                child: widget.grid[index],
+                onTap: () {
+                  setState(() {
+                    widget.grid[index] = widget.currentlySelectedTile;
+                  });
+                },
+              );
+            },
           ),
-        ).inGridArea('grid'),
-      ]),
-    );
+        ),
+      ).inGridArea('grid'),
+    ]);
   }
 }

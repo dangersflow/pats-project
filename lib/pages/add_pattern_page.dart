@@ -196,12 +196,12 @@ class _AddPatternPageState extends State<AddPatternPage> {
       ),
       body: LayoutGrid(
         areas: '''
-        . .               . .            .                .
-        . header          . .            .                .
-        . patternSelector patternSelector tileSelector tileSelector     .
-        . footer          footer footer            footer                .
+        . .               .               .  .            .                .
+        . header          .               .  .            .                .
+        . patternSelector patternSelector .  tileSelector tileSelector     .
+        . footer          footer          .  .            .                .
         ''',
-        columnSizes: [0.25.fr, 1.0.fr, 0.5.fr, 0.5.fr, 1.fr, 0.2.fr],
+        columnSizes: [0.25.fr, 1.0.fr, 0.2.fr, 0.1.fr, 0.5.fr, 1.fr, 0.2.fr],
         rowSizes: [0.05.fr, 0.10.fr, 1.fr, 0.1.fr],
         children: [
           SizedBox(
