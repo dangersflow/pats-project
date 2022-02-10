@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:pats_project/components/tile.dart';
 import 'package:screenshot/screenshot.dart';
 
 class PatternSelector extends StatefulWidget {
   Tile currentlySelectedTile;
+  bool hasATileSelected;
   List<Tile> grid;
   Function(int, int) createGrid;
   Function(int, int) changeGridSize;
@@ -19,7 +21,8 @@ class PatternSelector extends StatefulWidget {
       required this.changeGridSize,
       required this.xController,
       required this.yController,
-      required this.screenshotController})
+      required this.screenshotController,
+      required this.hasATileSelected})
       : super(key: key);
 
   @override
@@ -125,7 +128,16 @@ class _PatternSelectorState extends State<PatternSelector> {
                 child: widget.grid[index],
                 onTap: () {
                   setState(() {
-                    widget.grid[index] = widget.currentlySelectedTile;
+                    if (widget.hasATileSelected) {
+                      widget.grid[index] = widget.currentlySelectedTile;
+                    } else {
+                      MotionToast.error(
+                        description: Text("Please select a tile!"),
+                        animationDuration: Duration(milliseconds: 100),
+                        animationCurve: Curves.easeInOutCubic,
+                        toastDuration: Duration(milliseconds: 1000),
+                      ).show(context);
+                    }
                   });
                 },
               );

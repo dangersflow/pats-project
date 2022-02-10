@@ -28,14 +28,14 @@ class _PatternHomePageState extends State<PatternHomePage> {
       ),
       body: LayoutGrid(
         areas: '''
-        . header  header  .       .      . 
-        . content content content .      .
-        . content content content .      .
-        . content content content .      .
-        . footer  footer  .       button .
-        . .       .       .       .      .
+        . header  header  .       .            . 
+        . content content content content      .
+        . content content content content      .
+        . content content content content      .
+        . footer  footer  .       button       .
+        . .       .       .       .            .
         ''',
-        columnSizes: [0.2.fr, 1.fr, 1.fr, 1.5.fr, 0.3.fr, 0.15.fr],
+        columnSizes: [0.15.fr, 1.fr, 1.fr, 1.5.fr, 0.3.fr, 0.15.fr],
         rowSizes: [0.2.fr, 1.fr, 1.fr, 1.5.fr, 0.3.fr, 0.15.fr],
         children: [
           ElevatedButton(
@@ -57,19 +57,26 @@ class _PatternHomePageState extends State<PatternHomePage> {
               //if snapshot has data, then return a gridview with the data
               if (snapshot.hasData) {
                 print(snapshot.data.docs.length);
-                return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 7, childAspectRatio: 0.85),
-                  itemCount: snapshot.data.docs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    print(snapshot.data.docs[index].data()['image']);
-                    return PatternItem(
-                        projectKey: snapshot.data.docs[index].data()['name'],
-                        projectTitle:
-                            snapshot.data.docs[index].data()['project_name'],
-                        imageUrl: snapshot.data.docs[index].data()['image']);
-                  },
-                );
+                if (snapshot.data.docs.length < 1) {
+                  return Center(
+                    child: Text("Try adding a pattern!"),
+                  );
+                } else {
+                  return GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 7, childAspectRatio: 0.85),
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      print(snapshot.data.docs[index].data()['image']);
+                      return PatternItem(
+                          projectKey: snapshot.data.docs[index].data()['name'],
+                          projectTitle:
+                              snapshot.data.docs[index].data()['project_name'],
+                          imageUrl: snapshot.data.docs[index].data()['image']);
+                    },
+                  );
+                }
               } else {
                 return Center(
                   child: CircularProgressIndicator(),

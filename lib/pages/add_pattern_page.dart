@@ -27,7 +27,9 @@ class _AddPatternPageState extends State<AddPatternPage> {
   List<Tile> tilePool = [];
   List<Tile> grid = [];
   List<Map> gridMap = [];
+  List<Map> tilePoolMap = [];
   Tile currentlySelectedTile = Tile(color: Colors.black);
+  bool hasATileSelected = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController xController = TextEditingController();
   TextEditingController yController = TextEditingController();
@@ -36,18 +38,26 @@ class _AddPatternPageState extends State<AddPatternPage> {
   void changeCurrentTile(Color color) {
     setState(() {
       currentlySelectedTile = Tile(color: color);
+      hasATileSelected = true;
     });
   }
 
   void addTileToPool(Tile tile) {
     setState(() {
-      tilePool.add(tile);
+      tilePoolMap.add({'color': tile.color.value});
     });
+    print("tile added!");
   }
 
-  void convertGridToMap() {
+  Future<void> convertGridToMap() async {
     for (int i = 0; i < grid.length; i++) {
       gridMap.add(grid[i].toMap());
+    }
+  }
+
+  Future<void> convertTilePoolToMap() async {
+    for (int i = 0; i < tilePool.length; i++) {
+      tilePoolMap.add(tilePool[i].toMap());
     }
   }
 
@@ -129,7 +139,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
         context.go('/');
       });
       //convert current grid to map
-      convertGridToMap();
+      await convertGridToMap();
       // Call the user's CollectionReference to add a new user
       patterns_home.add({
         'image': currentImageUrl,
@@ -141,6 +151,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
         'pattern_dimension_x': int.parse(xController.text),
         'pattern_dimension_y': int.parse(xController.text),
         'leaderboard': [],
+        'tilePool': tilePoolMap,
         'grid': gridMap
       }).then((value) {
         print("Pattern Added");
@@ -150,6 +161,8 @@ class _AddPatternPageState extends State<AddPatternPage> {
           animationCurve: Curves.easeInOutCubic,
           toastDuration: Duration(milliseconds: 1000),
         ).show(context);
+        //clear our tile pool
+        tilePoolMap.clear();
       }).catchError((error) => print("Failed to add pattern: $error"));
     }
 
@@ -201,7 +214,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
         . patternSelector patternSelector .  tileSelector tileSelector     .
         . footer          footer          .  .            .                .
         ''',
-        columnSizes: [0.25.fr, 1.0.fr, 0.2.fr, 0.1.fr, 0.5.fr, 1.fr, 0.2.fr],
+        columnSizes: [0.25.fr, 1.0.fr, 0.2.fr, 0.15.fr, 0.7.fr, 1.fr, 0.2.fr],
         rowSizes: [0.05.fr, 0.10.fr, 1.fr, 0.1.fr],
         children: [
           SizedBox(
@@ -234,11 +247,13 @@ class _AddPatternPageState extends State<AddPatternPage> {
             xController: xController,
             yController: yController,
             screenshotController: screenshotController,
+            hasATileSelected: hasATileSelected,
           ).inGridArea('patternSelector'),
           Wrap(
             children: [
               TileSelector(
                 changeCurrentTile: changeCurrentTile,
+                addTileToPool: addTileToPool,
               )
             ],
           ).inGridArea('tileSelector'),

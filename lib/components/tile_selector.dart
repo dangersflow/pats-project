@@ -10,7 +10,9 @@ import 'package:pats_project/components/tile_pool.dart';
 
 class TileSelector extends StatefulWidget {
   Function(Color)? changeCurrentTile;
-  TileSelector({Key? key, this.changeCurrentTile}) : super(key: key);
+  Function(Tile)? addTileToPool;
+  TileSelector({Key? key, this.changeCurrentTile, this.addTileToPool})
+      : super(key: key);
 
   @override
   _TileSelectorState createState() => _TileSelectorState();
@@ -98,6 +100,10 @@ class _TileSelectorState extends State<TileSelector> {
                                     tilePool.add(Tile(
                                       color: pickerColor,
                                     ));
+                                  });
+                                  setState(() {
+                                    widget.addTileToPool!(
+                                        Tile(color: pickerColor));
                                   });
                                 } else {
                                   MotionToast.error(
