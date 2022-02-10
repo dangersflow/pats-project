@@ -29,6 +29,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   List<Tile> tilePool = [];
   List<Map> leaderboard = [];
   List<Map> grid = [];
+  List<Tile> currentTilePool = [];
   int x = 1;
   int y = 1;
   String name = '';
@@ -67,6 +68,16 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
           leaderboard.add(element);
         });
         leaderboardLoaded = true;
+      });
+      setState(() {
+        List<dynamic>.from(value.docs.first.data()['tilePool'])
+            .forEach((element) {
+          print(element['color']);
+          tilePool.add(Tile(
+            color: Color(element['color']),
+          ));
+        });
+        tilePoolLoaded = true;
       });
       setState(() {
         x = value.docs[0].get('pattern_dimension_x');
@@ -163,7 +174,8 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                 child: widget.isTileEntryVisible
                     ? TileSetEntry(
                         hideTileSetEntry: hideTileSetEntry,
-                        exampleData: leaderboard,
+                        leaderboardData: leaderboard,
+                        tilePool: tilePool,
                         updateData: updateData,
                       )
                     : Leaderboard(

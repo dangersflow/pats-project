@@ -1,15 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
+import 'package:pats_project/components/tile.dart';
 import 'package:pats_project/components/tile_container.dart';
 
 class TileSetEntry extends StatefulWidget {
-  List<Map> exampleData;
+  List<Map> leaderboardData;
+  List<Tile> tilePool;
   Function(List<Map>) updateData;
   Function() hideTileSetEntry;
   TileSetEntry(
       {Key? key,
       required this.hideTileSetEntry,
-      required this.exampleData,
+      required this.leaderboardData,
+      required this.tilePool,
       required this.updateData})
       : super(key: key);
 
@@ -20,21 +24,28 @@ class TileSetEntry extends StatefulWidget {
 class _TileSetEntryState extends State<TileSetEntry> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return LayoutGrid(
+      areas: '''
+      title
+      namefield
+      tilepool
+      buttons
+      ''',
+      columnSizes: [1.fr],
+      rowSizes: [0.1.fr, 1.fr, 1.fr, 1.fr],
       children: [
         Text(
           "Tile Set Entry",
           style: TextStyle(
               fontSize: MediaQuery.of(context).size.width * 0.01,
               fontWeight: FontWeight.bold),
-        ),
-        Padding(padding: EdgeInsets.fromLTRB(0, 50, 0, 0)),
+        ).inGridArea('title'),
         TextField(
           decoration:
               InputDecoration(alignLabelWithHint: true, label: Text("Name")),
           onChanged: (value) {},
-        ),
-        TileContainer(),
+        ).inGridArea('namefield'),
+        TileContainer().inGridArea('tilepool'),
         Row(
           children: [
             ElevatedButton(
@@ -44,7 +55,7 @@ class _TileSetEntryState extends State<TileSetEntry> {
             ElevatedButton(
               child: Text("Add New Entry"),
               onPressed: () {
-                widget.exampleData.add({
+                widget.leaderboardData.add({
                   'user': 'Example',
                   'image': 'https://randomuser.me/api/portraits/',
                   'tileSet': {
@@ -55,14 +66,13 @@ class _TileSetEntryState extends State<TileSetEntry> {
                     },
                   },
                 });
-                widget.updateData(widget.exampleData);
+                widget.updateData(widget.leaderboardData);
                 widget.hideTileSetEntry();
               },
             )
           ],
-        ),
+        ).inGridArea('buttons'),
       ],
-      crossAxisAlignment: CrossAxisAlignment.start,
     );
   }
 }
