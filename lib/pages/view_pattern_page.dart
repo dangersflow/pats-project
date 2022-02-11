@@ -4,6 +4,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:pats_project/components/leaderboard.dart';
 import 'package:pats_project/components/pattern_display.dart';
+import 'package:pats_project/components/tile_selector%20with_pool.dart';
 import 'package:pats_project/components/tile_set_entry.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:go_router/go_router.dart';
@@ -30,6 +31,9 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   List<Map> leaderboard = [];
   List<Map> grid = [];
   List<Tile> currentTilePool = [];
+  List<Tile> finalSelectedTilePool = [];
+  Tile currentlySelectedTile = Tile(color: Colors.black);
+  bool hasATileSelected = false;
   int x = 1;
   int y = 1;
   String name = '';
@@ -45,6 +49,19 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
     super.initState();
 
     getData();
+  }
+
+  void addTileToFinalPool(Tile tile) {
+    setState(() {
+      finalSelectedTilePool.add(tile);
+    });
+  }
+
+  void changeCurrentTile(Color color) {
+    setState(() {
+      currentlySelectedTile = Tile(color: color);
+      hasATileSelected = true;
+    });
   }
 
   Future<void> getData() async {
@@ -172,11 +189,13 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                 duration: const Duration(milliseconds: 300),
                 reverse: !widget.isTileEntryVisible,
                 child: widget.isTileEntryVisible
-                    ? TileSetEntry(
-                        hideTileSetEntry: hideTileSetEntry,
-                        leaderboardData: leaderboard,
+                    ? TileSelectorWithPool(
                         tilePool: tilePool,
-                        updateData: updateData,
+                        changeCurrentTile: changeCurrentTile,
+                        currentTileSelected: currentlySelectedTile,
+                        hasSelectedTile: hasATileSelected,
+                        addTileToPool: addTileToFinalPool,
+                        hideTileSetEntry: hideTileSetEntry,
                       )
                     : Leaderboard(
                         listData: leaderboard,
@@ -192,48 +211,6 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                   );
                 }).inGridArea('leaderboard')
           ],
-        )
-        // Center(
-        //   child: Column(
-        //     children: [
-        //       Row(children: [
-        //         const Padding(padding: EdgeInsets.fromLTRB(100, 150, 0, 0)),
-        //         Text(
-        //           'Demo Pattern',
-        //           style:
-        //               TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
-        //         ),
-        //       ]),
-        //       Row(
-        //         children: [
-        //           SizedBox(
-        //               child: PatternDisplay(x: 5, y: 5),
-        //               width: MediaQuery.of(context).size.width / 3,
-        //               height: MediaQuery.of(context).size.width / 3),
-        //           const Padding(padding: EdgeInsets.fromLTRB(150, 0, 0, 0)),
-        //           widget.isTileEntryVisible
-        //               ? SizedBox(
-        //                   child: TileSetEntry(
-        //                     hideTileSetEntry: hideTileSetEntry,
-        //                     exampleData: exampleData,
-        //                     updateData: updateData,
-        //                   ),
-        //                   width: MediaQuery.of(context).size.width / 3,
-        //                   height: MediaQuery.of(context).size.width / 3)
-        //               : SizedBox(
-        //                   child: Leaderboard(
-        //                     listData: exampleData,
-        //                     onAddEntry: showTileSetEntry,
-        //                   ),
-        //                   width: MediaQuery.of(context).size.width / 3,
-        //                   height: MediaQuery.of(context).size.width / 3,
-        //                 ),
-        //         ],
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        );
+        ));
   }
 }
