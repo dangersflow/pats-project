@@ -3,8 +3,15 @@ import 'package:pats_project/components/tile.dart';
 
 class TilePool extends StatefulWidget {
   List<Tile> mainTilePool;
+  double? height;
+  double? width;
   Function(int, Tile, int, int)? changeTile;
-  TilePool({Key? key, required this.mainTilePool, this.changeTile})
+  TilePool(
+      {Key? key,
+      required this.mainTilePool,
+      this.changeTile,
+      this.height,
+      this.width})
       : super(key: key);
 
   @override
@@ -19,8 +26,8 @@ class _TilePoolState extends State<TilePool> {
     return Column(
       children: [
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.45,
-          width: MediaQuery.of(context).size.width * 0.4,
+          height: widget.height ?? MediaQuery.of(context).size.height * 0.45,
+          width: widget.width ?? MediaQuery.of(context).size.width * 0.4,
           child: Card(
             child: widget.mainTilePool.isEmpty
                 ? Text("Try adding a Tile!")

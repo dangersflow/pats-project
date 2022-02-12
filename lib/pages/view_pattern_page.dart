@@ -191,6 +191,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                 child: widget.isTileEntryVisible
                     ? TileSelectorWithPool(
                         tilePool: tilePool,
+                        finalTilePool: finalSelectedTilePool,
                         changeCurrentTile: changeCurrentTile,
                         currentTileSelected: currentlySelectedTile,
                         hasSelectedTile: hasATileSelected,

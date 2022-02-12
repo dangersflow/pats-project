@@ -5,6 +5,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
+import 'package:pats_project/components/expandable_card.dart';
 import 'package:pats_project/components/tile.dart';
 import 'package:pats_project/components/tile_pool.dart';
 
@@ -13,6 +14,7 @@ class TileSelectorWithPool extends StatefulWidget {
   Function(Tile)? addTileToPool;
   Function()? hideTileSetEntry;
   List<Tile> tilePool;
+  List<Tile> finalTilePool;
   Tile currentTileSelected;
   bool hasSelectedTile;
   TileSelectorWithPool(
@@ -22,6 +24,7 @@ class TileSelectorWithPool extends StatefulWidget {
       required this.tilePool,
       required this.currentTileSelected,
       required this.hasSelectedTile,
+      required this.finalTilePool,
       this.hideTileSetEntry})
       : super(key: key);
 
@@ -76,90 +79,141 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
         child: LayoutGrid(
       areas: '''
         tileWithGlues
+        .
         tileSelector
         buttons
         ''',
       columnSizes: [1.fr],
-      rowSizes: [0.5.fr, 1.fr, 0.1.fr],
+      rowSizes: [0.8.fr, 0.1.fr, 1.fr, 0.05.fr],
       children: [
-        LayoutGrid(
-          areas: '''
-                  .    up    .
-                left  tile right
-                  .   down   .
-                ''',
-          columnSizes: [1.fr, 1.fr, 1.fr],
-          rowSizes: [1.fr, 1.fr, 1.fr],
-          children: [
-            widget.hasSelectedTile
-                ? Center(child: widget.currentTileSelected).inGridArea('tile')
-                : Container().inGridArea('tile'),
-            Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.025,
-                child: TextField(
-                    controller: up,
-                    maxLength: 1,
-                    decoration: InputDecoration(
-                        label: Text("N"),
-                        border: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black, width: 5.0),
-                        ))),
-              ),
-            ).inGridArea('up'),
-            Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.025,
-                child: TextField(
-                    controller: down,
-                    maxLength: 1,
-                    decoration: InputDecoration(
-                        label: Text("S"),
-                        border: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black, width: 5.0),
-                        ))),
-              ),
-            ).inGridArea('down'),
-            Row(
+        Center(
+          child: Wrap(clipBehavior: Clip.antiAlias, children: [
+            Column(
               children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.025,
-                  child: TextField(
-                      controller: left,
-                      maxLength: 1,
-                      decoration: InputDecoration(
-                          label: Text("W"),
+                Row(
+                  children: [
+                    Text(
+                      "Add Glues",
+                      style: TextStyle(
+                          fontSize: (MediaQuery.of(context).size.height +
+                                  MediaQuery.of(context).size.width) *
+                              0.006),
+                    )
+                  ],
+                ),
+                Divider(endIndent: MediaQuery.of(context).size.width * 0.3),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.05,
+                      child: TextField(
+                        controller: up,
+                        decoration: InputDecoration(
+                          labelText: 'Up',
                           border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 5.0),
-                          ))),
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 30)),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.05,
+                      child: TextField(
+                        controller: left,
+                        decoration: InputDecoration(
+                          labelText: 'Left',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.fromLTRB(0, 0, 30, 0)),
+                    widget.hasSelectedTile
+                        ? SizedBox(
+                            height: 200,
+                            width: 200,
+                            child: widget.currentTileSelected,
+                          )
+                        : Container(
+                            height: 200,
+                            width: 200,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black)),
+                          ),
+                    Padding(padding: EdgeInsets.fromLTRB(30, 0, 0, 0)),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.05,
+                      child: TextField(
+                        controller: right,
+                        decoration: InputDecoration(
+                          labelText: 'Right',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Padding(padding: EdgeInsets.fromLTRB(0, 30, 0, 0)),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.05,
+                      child: TextField(
+                        controller: down,
+                        decoration: InputDecoration(
+                          labelText: 'Down',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+              ],
+            )
+          ]),
+        ).inGridArea('tileWithGlues'),
+        Center(
+          child: Wrap(children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Text("Select Tile",
+                        style: TextStyle(
+                            fontSize: (MediaQuery.of(context).size.height +
+                                    MediaQuery.of(context).size.width) *
+                                0.006)),
+                  ],
+                ),
+                Divider(endIndent: MediaQuery.of(context).size.width * 0.3),
+                Row(
+                  children: [
+                    TilePool(
+                      mainTilePool: widget.tilePool,
+                      changeTile: changeTileInPool,
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      width: MediaQuery.of(context).size.width * 0.2,
+                    ),
+                    TilePool(
+                      mainTilePool: widget.finalTilePool,
+                      changeTile: changeTileInPool,
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      width: MediaQuery.of(context).size.width * 0.2,
+                    ),
+                  ],
                 )
               ],
-              mainAxisAlignment: MainAxisAlignment.end,
-            ).inGridArea('left'),
-            Row(children: [
-              Center(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.025,
-                  child: TextField(
-                      controller: right,
-                      maxLength: 1,
-                      decoration: InputDecoration(
-                          label: Text("E"),
-                          border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 5.0),
-                          ))),
-                ),
-              ),
-            ]).inGridArea('right')
-          ],
-        ).inGridArea('tileWithGlues'),
-        TilePool(
-          mainTilePool: widget.tilePool,
-          changeTile: changeTileInPool,
+            )
+          ]),
         ).inGridArea('tileSelector'),
         Row(
           children: [
@@ -178,7 +232,7 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
               onPressed: () {},
             ))
           ],
-        )
+        ).inGridArea('buttons')
       ],
     ));
   }
