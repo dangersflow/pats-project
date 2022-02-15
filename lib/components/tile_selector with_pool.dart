@@ -79,12 +79,11 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
         child: LayoutGrid(
       areas: '''
         tileWithGlues
-        .
         tileSelector
         buttons
         ''',
       columnSizes: [1.fr],
-      rowSizes: [0.8.fr, 0.1.fr, 1.fr, 0.05.fr],
+      rowSizes: [1.fr, 1.fr, 0.05.fr],
       children: [
         Center(
           child: Wrap(clipBehavior: Clip.antiAlias, children: [
@@ -135,13 +134,13 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                     Padding(padding: EdgeInsets.fromLTRB(0, 0, 30, 0)),
                     widget.hasSelectedTile
                         ? SizedBox(
-                            height: 200,
-                            width: 200,
+                            height: 150,
+                            width: 150,
                             child: widget.currentTileSelected,
                           )
                         : Container(
-                            height: 200,
-                            width: 200,
+                            height: 150,
+                            width: 150,
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black)),
                           ),

@@ -143,7 +143,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         body: LayoutGrid(
           areas: '''
          . .             .             . .            .
-         . patternHeader patternHeader . .            .
+         . patternHeader patternHeader . leaderboard  .
          . pattern       pattern       . leaderboard  .
          . pattern       pattern       . leaderboard  .
          . footer        footer        . .            .
