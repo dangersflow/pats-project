@@ -134,13 +134,13 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                     Padding(padding: EdgeInsets.fromLTRB(0, 0, 30, 0)),
                     widget.hasSelectedTile
                         ? SizedBox(
-                            height: 150,
-                            width: 150,
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            width: MediaQuery.of(context).size.height * 0.2,
                             child: widget.currentTileSelected,
                           )
                         : Container(
-                            height: 150,
-                            width: 150,
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            width: MediaQuery.of(context).size.height * 0.2,
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black)),
                           ),
@@ -228,7 +228,9 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
             Expanded(
                 child: ElevatedButton(
               child: Text("Add Entry"),
-              onPressed: () {},
+              onPressed: () {
+                widget.hideTileSetEntry!();
+              },
             ))
           ],
         ).inGridArea('buttons')
