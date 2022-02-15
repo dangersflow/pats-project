@@ -134,13 +134,13 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                     Padding(padding: EdgeInsets.fromLTRB(0, 0, 30, 0)),
                     widget.hasSelectedTile
                         ? SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            width: MediaQuery.of(context).size.height * 0.2,
+                            height: MediaQuery.of(context).size.height * 0.18,
+                            width: MediaQuery.of(context).size.height * 0.18,
                             child: widget.currentTileSelected,
                           )
                         : Container(
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            width: MediaQuery.of(context).size.height * 0.2,
+                            height: MediaQuery.of(context).size.height * 0.18,
+                            width: MediaQuery.of(context).size.height * 0.18,
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black)),
                           ),
