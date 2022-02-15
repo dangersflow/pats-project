@@ -181,7 +181,7 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
           ]),
         ).inGridArea('tileWithGlues'),
         Center(
-          child: Wrap(children: [
+          child: Wrap(clipBehavior: Clip.antiAlias, children: [
             Column(
               children: [
                 Row(
@@ -196,19 +196,26 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                 Divider(endIndent: MediaQuery.of(context).size.width * 0.3),
                 Row(
                   children: [
-                    TilePool(
-                      mainTilePool: widget.tilePool,
-                      changeTile: changeTileInPool,
-                      height: MediaQuery.of(context).size.height * 0.35,
-                      width: MediaQuery.of(context).size.width * 0.2,
-                    ),
-                    TilePool(
-                      mainTilePool: widget.finalTilePool,
-                      changeTile: changeTileInPool,
-                      height: MediaQuery.of(context).size.height * 0.35,
-                      width: MediaQuery.of(context).size.width * 0.2,
-                    ),
+                    Expanded(
+                        child: Wrap(
+                      clipBehavior: Clip.antiAlias,
+                      children: [
+                        TilePool(
+                          mainTilePool: widget.tilePool,
+                          changeTile: changeTileInPool,
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          width: MediaQuery.of(context).size.width * 0.2,
+                        ),
+                        TilePool(
+                          mainTilePool: widget.finalTilePool,
+                          changeTile: changeTileInPool,
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          width: MediaQuery.of(context).size.width * 0.2,
+                        )
+                      ],
+                    ))
                   ],
+                  mainAxisSize: MainAxisSize.min,
                 )
               ],
             )
