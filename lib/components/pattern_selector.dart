@@ -1,3 +1,6 @@
+import 'dart:html';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:motion_toast/motion_toast.dart';
@@ -7,6 +10,7 @@ import 'package:screenshot/screenshot.dart';
 class PatternSelector extends StatefulWidget {
   Tile currentlySelectedTile;
   bool hasATileSelected;
+  bool enabledPainting;
   List<Tile> grid;
   Function(int, int) createGrid;
   Function(int, int) changeGridSize;
@@ -22,7 +26,8 @@ class PatternSelector extends StatefulWidget {
       required this.xController,
       required this.yController,
       required this.screenshotController,
-      required this.hasATileSelected})
+      required this.hasATileSelected,
+      this.enabledPainting = false})
       : super(key: key);
 
   @override
@@ -33,6 +38,7 @@ class _PatternSelectorState extends State<PatternSelector> {
   //TextEditingController xController = TextEditingController();
   //TextEditingController yController = TextEditingController();
   int maxSize = 500;
+  bool beganLongPress = false;
 
   @override
   void initState() {
@@ -51,6 +57,16 @@ class _PatternSelectorState extends State<PatternSelector> {
 
   @override
   Widget build(BuildContext context) {
+    window.onKeyDown.listen(((event) {
+      print(event.key);
+      if (event.key == "Control") {
+        beganLongPress = true;
+      }
+    }));
+    window.onKeyUp.listen((event) {
+      beganLongPress = false;
+    });
+
     return LayoutGrid(areas: '''
     fields
     grid
@@ -110,39 +126,38 @@ class _PatternSelectorState extends State<PatternSelector> {
       //add a gridview builder using the controllers
       Screenshot(
         controller: widget.screenshotController,
-        child: GestureDetector(
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: int.parse(widget.xController.text),
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-              childAspectRatio: 1,
-            ),
-            reverse: true,
-            itemCount: int.parse(widget.yController.text) *
-                int.parse(widget.xController.text),
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                child: widget.grid[index],
-                onTap: () {
-                  setState(() {
-                    if (widget.hasATileSelected) {
-                      widget.grid[index] = widget.currentlySelectedTile;
-                    } else {
-                      MotionToast.error(
-                        description: Text("Please select a tile!"),
-                        animationDuration: Duration(milliseconds: 100),
-                        animationCurve: Curves.easeInOutCubic,
-                        toastDuration: Duration(milliseconds: 1000),
-                      ).show(context);
-                    }
-                  });
-                },
-              );
-            },
+        child: GridView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: int.parse(widget.xController.text),
+            crossAxisSpacing: 5,
+            mainAxisSpacing: 5,
+            childAspectRatio: 1,
           ),
+          reverse: true,
+          itemCount: int.parse(widget.yController.text) *
+              int.parse(widget.xController.text),
+          itemBuilder: (context, index) {
+            return Listener(
+              child: widget.grid[index],
+              onPointerHover: (details) {
+                setState(() {
+                  print("got here" + beganLongPress.toString());
+                  if (widget.hasATileSelected && beganLongPress) {
+                    widget.grid[index] = widget.currentlySelectedTile;
+                  } else if (!widget.hasATileSelected) {
+                    MotionToast.error(
+                      description: Text("Please select a tile!"),
+                      animationDuration: Duration(milliseconds: 100),
+                      animationCurve: Curves.easeInOutCubic,
+                      toastDuration: Duration(milliseconds: 1000),
+                    ).show(context);
+                  }
+                });
+              },
+            );
+          },
         ),
       ).inGridArea('grid'),
     ]);

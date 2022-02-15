@@ -30,6 +30,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
   List<Map> tilePoolMap = [];
   Tile currentlySelectedTile = Tile(color: Colors.black);
   bool hasATileSelected = false;
+  bool enabledPainting = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController xController = TextEditingController();
   TextEditingController yController = TextEditingController();
@@ -209,14 +210,26 @@ class _AddPatternPageState extends State<AddPatternPage> {
       ),
       body: LayoutGrid(
         areas: '''
-        . .               .               .  .            .                .
-        . header          .               .  .            .                .
-        . patternSelector patternSelector .  tileSelector tileSelector     .
-        . footer          footer          .  .            .                .
+        . .               .               .         .            .                .
+        . header          .               settings  .            .                .
+        . patternSelector patternSelector settings  tileSelector tileSelector     .
+        . footer          footer          settings  .            .                .
         ''',
         columnSizes: [0.25.fr, 1.0.fr, 0.2.fr, 0.15.fr, 0.7.fr, 1.fr, 0.2.fr],
         rowSizes: [0.05.fr, 0.10.fr, 1.fr, 0.1.fr],
         children: [
+          Column(
+            children: [
+              Switch(
+                  value: enabledPainting,
+                  onChanged: (value) {
+                    setState(() {
+                      enabledPainting = value;
+                    });
+                  })
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          ).inGridArea('settings'),
           SizedBox(
             child: TextField(
               controller: nameController,
@@ -248,6 +261,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
             yController: yController,
             screenshotController: screenshotController,
             hasATileSelected: hasATileSelected,
+            enabledPainting: enabledPainting,
           ).inGridArea('patternSelector'),
           Wrap(
             children: [
