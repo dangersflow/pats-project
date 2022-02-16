@@ -141,12 +141,27 @@ class _PatternSelectorState extends State<PatternSelector> {
           itemBuilder: (context, index) {
             return Listener(
               child: widget.grid[index],
+              onPointerDown: (details) {
+                setState(() {
+                  print("got here" + beganLongPress.toString());
+                  if (widget.hasATileSelected) {
+                    widget.grid[index] = widget.currentlySelectedTile;
+                  } else if (!widget.hasATileSelected) {
+                    MotionToast.error(
+                      description: Text("Please select a tile!"),
+                      animationDuration: Duration(milliseconds: 100),
+                      animationCurve: Curves.easeInOutCubic,
+                      toastDuration: Duration(milliseconds: 1000),
+                    ).show(context);
+                  }
+                });
+              },
               onPointerHover: (details) {
                 setState(() {
                   print("got here" + beganLongPress.toString());
                   if (widget.hasATileSelected && beganLongPress) {
                     widget.grid[index] = widget.currentlySelectedTile;
-                  } else if (!widget.hasATileSelected) {
+                  } else if (!widget.hasATileSelected && beganLongPress) {
                     MotionToast.error(
                       description: Text("Please select a tile!"),
                       animationDuration: Duration(milliseconds: 100),
