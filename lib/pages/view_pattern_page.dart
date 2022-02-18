@@ -160,7 +160,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
           title: InkWell(
             child: Text("PATS PROJECT"),
             onTap: () {
-              context.go('/');
+              context.go('/patterns');
             },
             splashColor: Colors.transparent,
             enableFeedback: false,
@@ -173,9 +173,9 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
           areas: '''
          .       .             .             . .            .
          .       patternHeader patternHeader . leaderboard  .
-         . pattern       pattern       . leaderboard  .
-         . pattern       pattern       . leaderboard  .
-         .       .             .             . .  .
+         .       pattern       pattern       . leaderboard  .
+         .       pattern       pattern       . leaderboard  .
+         .       buttons       buttons       . .            .
         ''',
           columnSizes: [0.2.fr, 1.fr, auto, auto, 1.fr, 0.2.fr],
           rowSizes: [

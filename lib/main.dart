@@ -7,41 +7,44 @@ import 'package:go_router/go_router.dart';
 import 'package:pats_project/pages/add_pattern_page.dart';
 import 'package:pats_project/pages/pattern_home_page.dart';
 import 'package:pats_project/pages/view_pattern_page.dart';
+import 'pages/log_in_page.dart';
 // Import the firebase_core and cloud_firestore plugin
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   // exampleData
   //     .sort((a, b) => (a['tileSet'].length).compareTo(b['tileSet'].length));
 
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) => MaterialApp.router(
-        routeInformationParser: _router.routeInformationParser,
-        routerDelegate: _router.routerDelegate,
-        title: 'GoRouter Example',
-      );
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  User? currentUser = null;
+  bool loggedIn = false;
 
   final _router = GoRouter(
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const PatternHomePage(),
+        builder: (context, state) => const LogInPage(),
       ),
+      GoRoute(
+          path: '/patterns',
+          builder: (context, state) => const PatternHomePage()),
       GoRoute(
         path: '/patterns/:pattern',
         builder: (context, state) {
@@ -58,4 +61,24 @@ class MyApp extends StatelessWidget {
       )
     ],
   );
+  @override
+  Widget build(BuildContext context) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+        setState(() {
+          currentUser = user;
+          loggedIn = true;
+        });
+      }
+    });
+
+    return MaterialApp.router(
+      routeInformationParser: _router.routeInformationParser,
+      routerDelegate: _router.routerDelegate,
+      title: 'PATS Project',
+    );
+  }
 }
