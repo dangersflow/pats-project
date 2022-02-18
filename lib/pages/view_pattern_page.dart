@@ -77,6 +77,22 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
     });
   }
 
+  void autoPopulateGlues() {
+    setState(() {
+      rowLoaded = false;
+      List<Map> tempArray = [];
+      for (int i = 0; i < x; i++) {
+        tempArray.add(Tile(
+          color: Colors.red,
+          showBorder: true,
+          showGlues: true,
+        ).toMap());
+      }
+      bottomTileRow = tempArray;
+      rowLoaded = true;
+    });
+  }
+
   void addTileToFinalPool(Tile tile) {
     setState(() {
       finalSelectedTilePool.add(tile);
@@ -194,6 +210,22 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
               style:
                   TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
             ).inGridArea('patternHeader'),
+            Row(
+              children: [
+                Wrap(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            autoPopulateGlues();
+                          });
+                        },
+                        child: Text("Auto Populate Glues"))
+                  ],
+                )
+              ],
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ).inGridArea('buttons'),
             AnimatedOpacity(
               opacity: gridLoaded && columnLoaded && rowLoaded ? 1 : 0,
               duration: Duration(milliseconds: 400),
