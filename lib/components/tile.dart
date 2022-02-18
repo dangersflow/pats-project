@@ -59,7 +59,7 @@ class _TileState extends State<Tile> {
       height: widget.y,
       decoration: widget.showBorder == true
           ? BoxDecoration(
-              border: Border.all(color: Colors.blueAccent, width: 5),
+              border: Border.all(color: Colors.black, width: 1),
               color: widget.color)
           : BoxDecoration(color: widget.color),
       child: widget.showGlues

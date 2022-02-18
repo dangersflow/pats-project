@@ -28,6 +28,8 @@ class ViewPatternPage extends StatefulWidget {
 
 class _ViewPatternPageState extends State<ViewPatternPage> {
   List<Tile> tilePool = [];
+  List<Map> leftTileColumn = [];
+  List<Map> bottomTileRow = [];
   List<Map> leaderboard = [];
   List<Map> grid = [];
   List<Tile> currentTilePool = [];
@@ -42,6 +44,8 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   bool tilePoolLoaded = false;
   bool leaderboardLoaded = false;
   bool gridLoaded = false;
+  bool columnLoaded = false;
+  bool rowLoaded = false;
 
   @override
   void initState() {
@@ -49,6 +53,28 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
     super.initState();
 
     getData();
+  }
+
+  void populateGlues() {
+    setState(() {
+      for (int i = 0; i < x; i++) {
+        bottomTileRow.add(Tile(
+          color: Colors.transparent,
+          showBorder: true,
+        ).toMap());
+      }
+      rowLoaded = true;
+    });
+
+    setState(() {
+      for (int i = 0; i < y; i++) {
+        leftTileColumn.add(Tile(
+          color: Colors.transparent,
+          showBorder: true,
+        ).toMap());
+      }
+      columnLoaded = true;
+    });
   }
 
   void addTileToFinalPool(Tile tile) {
@@ -100,6 +126,9 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         x = value.docs[0].get('pattern_dimension_x');
         y = value.docs[0].get('pattern_dimension_y');
         name = value.docs[0].get('keyPattern');
+
+        populateGlues();
+        print(leftTileColumn.length);
       });
     });
   }
@@ -142,11 +171,11 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         ),
         body: LayoutGrid(
           areas: '''
-         . .             .             . .            .
-         . patternHeader patternHeader . leaderboard  .
+         .       .             .             . .            .
+         .       patternHeader patternHeader . leaderboard  .
          . pattern       pattern       . leaderboard  .
          . pattern       pattern       . leaderboard  .
-         . footer        footer        . .            .
+         .       .             .             . .  .
         ''',
           columnSizes: [0.2.fr, 1.fr, auto, auto, 1.fr, 0.2.fr],
           rowSizes: [
@@ -166,11 +195,11 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                   TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
             ).inGridArea('patternHeader'),
             AnimatedOpacity(
-              opacity: gridLoaded ? 1 : 0,
+              opacity: gridLoaded && columnLoaded && rowLoaded ? 1 : 0,
               duration: Duration(milliseconds: 400),
               curve: Curves.easeInOutExpo,
               child: AnimatedContainer(
-                margin: gridLoaded
+                margin: gridLoaded && columnLoaded && rowLoaded
                     ? EdgeInsets.fromLTRB(0, 0, 0, 0)
                     : EdgeInsets.fromLTRB(0, 50, 0, 0),
                 duration: Duration(milliseconds: 400),
@@ -180,6 +209,8 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                     grid: grid,
                     x: x,
                     y: y,
+                    col: leftTileColumn,
+                    row: bottomTileRow,
                   ),
                   width: MediaQuery.of(context).size.width / 3,
                 ),
@@ -210,7 +241,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                     transitionType: SharedAxisTransitionType.horizontal,
                     child: child,
                   );
-                }).inGridArea('leaderboard')
+                }).inGridArea('leaderboard'),
           ],
         ));
   }
