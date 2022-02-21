@@ -35,6 +35,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   User? currentUser = null;
   bool loggedIn = false;
+  bool darkMode = false;
 
   final _router = GoRouter(
     routes: [
@@ -79,6 +80,9 @@ class _MyAppState extends State<MyApp> {
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       title: 'PATS Project',
+      darkTheme: ThemeData.dark(),
+      theme: ThemeData.light(),
+      themeMode: ThemeMode.dark,
     );
   }
 }

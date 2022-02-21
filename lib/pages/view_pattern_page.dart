@@ -28,8 +28,8 @@ class ViewPatternPage extends StatefulWidget {
 
 class _ViewPatternPageState extends State<ViewPatternPage> {
   List<Tile> tilePool = [];
-  List<Map> leftTileColumn = [];
-  List<Map> bottomTileRow = [];
+  List<Tile> leftTileColumn = [];
+  List<Tile> bottomTileRow = [];
   List<Map> leaderboard = [];
   List<Map> grid = [];
   List<Tile> currentTilePool = [];
@@ -61,7 +61,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         bottomTileRow.add(Tile(
           color: Colors.transparent,
           showBorder: true,
-        ).toMap());
+        ));
       }
       rowLoaded = true;
     });
@@ -71,25 +71,42 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         leftTileColumn.add(Tile(
           color: Colors.transparent,
           showBorder: true,
-        ).toMap());
+        ));
       }
       columnLoaded = true;
     });
   }
 
   void autoPopulateGlues() {
+    //auto populate the glues
     setState(() {
       rowLoaded = false;
-      List<Map> tempArray = [];
+      List<Tile> tempArray = [];
       for (int i = 0; i < x; i++) {
         tempArray.add(Tile(
           color: Colors.red,
           showBorder: true,
           showGlues: true,
-        ).toMap());
+          glues: const {'N': 'X', 'S': ' ', 'E': ' ', 'W': ' '},
+        ));
       }
       bottomTileRow = tempArray;
       rowLoaded = true;
+    });
+
+    setState(() {
+      columnLoaded = false;
+      List<Tile> tempArray = [];
+      for (int i = 0; i < x; i++) {
+        tempArray.add(Tile(
+          color: Colors.red,
+          showBorder: true,
+          showGlues: true,
+          glues: const {'N': ' ', 'S': ' ', 'E': 'X', 'W': ' '},
+        ));
+      }
+      leftTileColumn = tempArray;
+      columnLoaded = true;
     });
   }
 

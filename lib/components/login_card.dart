@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LogInSignUp extends StatefulWidget {
   const LogInSignUp({Key? key}) : super(key: key);
@@ -35,6 +36,7 @@ class _LogInSignUpState extends State<LogInSignUp> {
                       onPressed: () {
                         setState(() {
                           isLogin = true;
+                          context.go('/patterns');
                         });
                       },
                       child: Text("log in"))

@@ -5,8 +5,8 @@ import 'package:pats_project/components/tile.dart';
 class PatternDisplay extends StatefulWidget {
   final int x, y;
   List<Map>? grid;
-  List<Map>? col;
-  List<Map>? row;
+  List<Tile>? col;
+  List<Tile>? row;
   PatternDisplay(
       {Key? key,
       required this.x,
@@ -34,6 +34,8 @@ class _PatternDisplayState extends State<PatternDisplay> {
     int rowCounter = -1;
     int gridCounter = -1;
     bool cornerTile = false;
+    int totalTime = 1500;
+    double increments = (totalTime / widget.x);
     double colDelay = 0;
     double rowDelay = 0;
     return widget.grid!.isEmpty
@@ -50,7 +52,7 @@ class _PatternDisplayState extends State<PatternDisplay> {
             ),
             reverse: true,
             itemBuilder: (context, index) {
-              colDelay += (widget.x + widget.y) * 0.13;
+              colDelay += increments / 9;
               //column
               if (index % (widget.x + 1) == 0) {
                 colCounter++;
@@ -63,23 +65,17 @@ class _PatternDisplayState extends State<PatternDisplay> {
                 } else {
                   return FadeInLeft(
                       delay: Duration(milliseconds: colDelay.toInt()),
-                      child: Tile(
-                        color: Color(widget.col![colCounter]['color']),
-                        showBorder: widget.col![colCounter]['showBorder'],
-                      ));
+                      child: widget.col![colCounter]);
                 }
               }
               //row
               else if (index < widget.x + 1) {
                 rowCounter++;
-                rowDelay += (widget.x + widget.y) * 2;
+                rowDelay += increments;
 
                 return FadeInUp(
                     delay: Duration(milliseconds: rowDelay.toInt()),
-                    child: Tile(
-                      color: Color(widget.row![rowCounter]['color']),
-                      showBorder: widget.row![rowCounter]['showBorder'],
-                    ));
+                    child: widget.row![rowCounter]);
               } else {
                 gridCounter++;
                 return Tile(

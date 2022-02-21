@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Tile extends StatefulWidget {
-  final Color color;
-  final Map? glues;
-  final double x, y;
+  Color color;
+  Map? glues;
+  double x, y;
   int id;
   bool showGlues;
   bool showBorder;
+  bool showIndex;
 
   Tile(
       {Key? key,
@@ -16,7 +17,8 @@ class Tile extends StatefulWidget {
       this.y = 100,
       this.id = 0,
       this.showGlues = false,
-      this.showBorder = false})
+      this.showBorder = false,
+      this.showIndex = false})
       : super(key: key);
 
   Map toMap() {
@@ -29,6 +31,19 @@ class Tile extends StatefulWidget {
       'showGlues': showGlues,
       'showBorder': showBorder
     };
+  }
+
+  //generate fromMap function
+  factory Tile.fromMap(Map map) {
+    return Tile(
+      color: Color(map['color']),
+      glues: map['glues'],
+      x: map['x'],
+      y: map['y'],
+      id: map['id'],
+      showGlues: map['showGlues'],
+      showBorder: map['showBorder'],
+    );
   }
 
   String toStringValue() {
@@ -62,26 +77,47 @@ class _TileState extends State<Tile> {
               border: Border.all(color: Colors.black, width: 1),
               color: widget.color)
           : BoxDecoration(color: widget.color),
-      child: widget.showGlues
+      child: widget.showGlues && widget.glues != null
           ? Column(
               children: [
                 //top
                 Row(
-                  children: const [Text("X")],
+                  children: [
+                    Text(
+                      widget.glues!['N'] ?? '',
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.004,
+                          fontWeight: FontWeight.bold),
+                    )
+                  ],
                   mainAxisAlignment: MainAxisAlignment.center,
                 ),
                 //middle
                 Row(
                   children: [
-                    const Text("X"),
-                    Text(widget.id.toString()),
-                    const Text("X")
+                    Text(widget.glues?['W'] ?? '',
+                        style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.004,
+                            fontWeight: FontWeight.bold)),
+                    Text(widget.showIndex ? widget.id.toString() : '',
+                        style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.004,
+                            fontWeight: FontWeight.bold)),
+                    Text(widget.glues?['E'] ?? '',
+                        style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.004,
+                            fontWeight: FontWeight.bold))
                   ],
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
                 //bottom
                 Row(
-                  children: const [Text("X")],
+                  children: [
+                    Text(widget.glues?['S'] ?? '',
+                        style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.004,
+                            fontWeight: FontWeight.bold)),
+                  ],
                   mainAxisAlignment: MainAxisAlignment.center,
                 ),
               ],
