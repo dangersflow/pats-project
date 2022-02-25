@@ -79,18 +79,8 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void rebuildAllChildren(BuildContext context) {
-    void rebuild(Element el) {
-      el.markNeedsBuild();
-      el.visitChildren(rebuild);
-    }
-
-    (context as Element).visitChildren(rebuild);
-  }
-
   @override
   Widget build(BuildContext context) {
-    rebuildAllChildren(context);
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
