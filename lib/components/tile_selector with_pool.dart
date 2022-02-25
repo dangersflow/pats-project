@@ -234,7 +234,6 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                         ),
                         TilePool(
                           mainTilePool: widget.finalTilePool,
-                          changeTile: changeTileInPool,
                           height: MediaQuery.of(context).size.height * 0.35,
                           width: MediaQuery.of(context).size.width * 0.2,
                         )
