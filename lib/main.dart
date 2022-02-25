@@ -26,7 +26,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -36,34 +36,61 @@ class _MyAppState extends State<MyApp> {
   User? currentUser = null;
   bool loggedIn = false;
   bool darkMode = false;
+  GoRouter? _router;
 
-  final _router = GoRouter(
-    routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const LogInPage(),
-      ),
-      GoRoute(
-          path: '/patterns',
-          builder: (context, state) => const PatternHomePage()),
-      GoRoute(
-        path: '/patterns/:pattern',
-        builder: (context, state) {
-          final pattern = state.params['pattern'];
-          return ViewPatternPage(projectKey: pattern);
-        },
-      ),
-      GoRoute(
-        path: '/add_pattern',
-        builder: (context, state) {
-          final pattern = state.params['pattern'];
-          return AddPatternPage();
-        },
-      )
-    ],
-  );
+  void changeTheme(bool value) {
+    setState(() {
+      darkMode = value;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _router = GoRouter(
+      routes: [
+        // GoRoute(
+        //   path: '/',
+        //   builder: (context, state) => const LogInPage(),
+        // ),
+        GoRoute(
+            path: '/',
+            builder: (context, state) => PatternHomePage(
+                  darkMode: darkMode,
+                  changeTheme: changeTheme,
+                )),
+        GoRoute(
+          path: '/patterns/:pattern',
+          builder: (context, state) {
+            final pattern = state.params['pattern'];
+            return ViewPatternPage(projectKey: pattern);
+          },
+        ),
+        GoRoute(
+          path: '/add_pattern',
+          builder: (context, state) {
+            final pattern = state.params['pattern'];
+            return AddPatternPage();
+          },
+        )
+      ],
+    );
+  }
+
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
+
   @override
   Widget build(BuildContext context) {
+    rebuildAllChildren(context);
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
@@ -77,12 +104,10 @@ class _MyAppState extends State<MyApp> {
     });
 
     return MaterialApp.router(
-      routeInformationParser: _router.routeInformationParser,
-      routerDelegate: _router.routerDelegate,
+      routeInformationParser: _router!.routeInformationParser,
+      routerDelegate: _router!.routerDelegate,
       title: 'PATS Project',
-      darkTheme: ThemeData.dark(),
-      theme: ThemeData.light(),
-      themeMode: ThemeMode.dark,
+      theme: darkMode ? ThemeData.dark() : ThemeData.light(),
     );
   }
 }

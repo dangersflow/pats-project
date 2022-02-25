@@ -1,3 +1,4 @@
+import 'package:app_popup_menu/app_popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,9 +6,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_image/firebase_image.dart';
 import 'package:pats_project/components/pattern_item.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class PatternHomePage extends StatefulWidget {
-  const PatternHomePage({Key? key}) : super(key: key);
+  bool darkMode;
+  Function(bool) changeTheme;
+  PatternHomePage({Key? key, required this.darkMode, required this.changeTheme})
+      : super(key: key);
 
   @override
   _PatternHomePageState createState() => _PatternHomePageState();
@@ -18,6 +23,7 @@ class _PatternHomePageState extends State<PatternHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //_fakeDark = widget.darkMode;
   }
 
   @override
@@ -25,6 +31,26 @@ class _PatternHomePageState extends State<PatternHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pattern Home Page'),
+        actions: [
+          AppPopupMenu(
+            child: Icon(Icons.settings),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            menuItems: [
+              PopupMenuItem(
+                  onTap: () {
+                    setState(() {
+                      widget.darkMode = !widget.darkMode;
+                    });
+                  },
+                  child: SwitchListTile(
+                    value: widget.darkMode,
+                    onChanged: widget.changeTheme,
+                    title: Text("Dark Mode"),
+                  )),
+            ],
+          )
+        ],
       ),
       body: LayoutGrid(
         areas: '''

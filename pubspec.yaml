@@ -45,6 +45,8 @@ dependencies:
   animations: ^2.0.2
   animate_do: ^2.1.0
   firebase_auth: ^3.3.7
+  app_popup_menu: ^1.0.0
+  toggle_switch: ^1.4.0
 
 dev_dependencies:
   flutter_test:
