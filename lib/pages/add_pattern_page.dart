@@ -137,7 +137,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
         //     );
         //   },
         // );
-        context.go('/patterns');
+        context.go('/');
       });
       //convert current grid to map
       await convertGridToMap();
@@ -172,7 +172,7 @@ class _AddPatternPageState extends State<AddPatternPage> {
         title: InkWell(
           child: Text("PATS PROJECT"),
           onTap: () {
-            context.go('/patterns');
+            context.go('/');
           },
           splashColor: Colors.transparent,
           enableFeedback: false,

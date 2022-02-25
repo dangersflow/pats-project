@@ -193,7 +193,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
           title: InkWell(
             child: Text("PATS PROJECT"),
             onTap: () {
-              context.go('/patterns');
+              context.go('/');
             },
             splashColor: Colors.transparent,
             enableFeedback: false,
