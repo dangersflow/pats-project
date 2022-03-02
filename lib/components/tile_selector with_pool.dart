@@ -13,6 +13,7 @@ class TileSelectorWithPool extends StatefulWidget {
   Function(Color)? changeCurrentTile;
   Function(Tile)? addTileToPool;
   Function()? hideTileSetEntry;
+  Function()? onAddEntry;
   List<Tile> tilePool;
   List<Tile> finalTilePool;
   Tile currentTileSelected;
@@ -25,6 +26,7 @@ class TileSelectorWithPool extends StatefulWidget {
       required this.currentTileSelected,
       required this.hasSelectedTile,
       required this.finalTilePool,
+      this.onAddEntry,
       this.hideTileSetEntry})
       : super(key: key);
 
@@ -262,6 +264,9 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
               child: Text("Add Entry"),
               onPressed: () {
                 widget.hideTileSetEntry!();
+                widget.onAddEntry != null
+                    ? widget.onAddEntry!()
+                    : print("no on add");
               },
             ))
           ],

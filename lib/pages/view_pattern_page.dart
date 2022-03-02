@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:pats_project/components/leaderboard.dart';
+import 'package:pats_project/components/pats_simulation_widget.dart';
 import 'package:pats_project/components/pattern_display.dart';
 import 'package:pats_project/components/tile_selector%20with_pool.dart';
 import 'package:pats_project/components/tile_set_entry.dart';
@@ -32,6 +33,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   List<Tile> bottomTileRow = [];
   List<Map> leaderboard = [];
   List<Map> grid = [];
+  List<Tile> gridTiles = [];
   List<Tile> currentTilePool = [];
   List<Tile> finalSelectedTilePool = [];
   Tile currentlySelectedTile = Tile(color: Colors.black);
@@ -137,6 +139,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
           grid.add(element);
         });
         gridLoaded = true;
+        convertGridMapToTiles();
       });
       setState(() {
         List<dynamic>.from(value.docs.first.data()['leaderboard'])
@@ -184,6 +187,29 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
       leaderboard
           .sort((a, b) => (a['tileSet'].length).compareTo(b['tileSet'].length));
     });
+  }
+
+  void convertGridMapToTiles() {
+    for (int i = 0; i < grid.length; i++) {
+      gridTiles.add(Tile.fromMap(grid[i]));
+    }
+  }
+
+  void showSimulation() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: FadeInUp(
+                  child: PATSSimulationWidget(
+            grid: gridTiles,
+            bottomGlueRow: bottomTileRow,
+            leftGlueColumn: leftTileColumn,
+            tilePool: finalSelectedTilePool,
+            x: x,
+            y: y,
+          )));
+        });
   }
 
   @override
@@ -277,6 +303,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                         hasSelectedTile: hasATileSelected,
                         addTileToPool: addTileToFinalPool,
                         hideTileSetEntry: hideTileSetEntry,
+                        onAddEntry: showSimulation,
                       )
                     : Leaderboard(
                         listData: leaderboard,
