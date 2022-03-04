@@ -109,9 +109,11 @@ class PATSSimulation {
     //perform simulation
     int z_index = 0;
     int currentGridIndex = x * y;
+    int currentGlueColumnPointer = 0;
+    int currentGlueRowPointer = 0;
 
-    for (int current_x = 0; current_x < x; current_x++) {
-      for (int current_y = 0; current_y < y; current_y++) {
+    for (int current_y = 0; current_y < y; current_y++) {
+      for (int current_x = 0; current_x < x; current_x++) {
         //go through the row
         int currentIndex = current_x * x + current_y;
         bool indexFilled = false;
@@ -123,23 +125,23 @@ class PATSSimulation {
 
           //check if grabbed tile is able to be placed in current position
 
-          //if z-index is 0, then check the glues of the bottom platform
-          if (z_index == 0) {
-            //check if glues line up
-            if (leftGlueColumn[z_index].glues!['E'] ==
-                    grabbedTile.glues!['W'] &&
-                bottomGlueRow[z_index].glues!['N'] == grabbedTile.glues!['S']) {
-              resultingGrid.add(grabbedTile);
-              indexFilled = true;
-            }
+          //get tile left of current pos
+          Tile leftTile;
+          if (current_x - 1 == -1) {
+            leftTile = leftGlueColumn[currentGlueColumnPointer];
           } else {
-            if (leftGlueColumn[z_index].glues!['E'] ==
-                    grabbedTile.glues!['W'] &&
-                bottomGlueRow[z_index].glues!['N'] == grabbedTile.glues!['S']) {
-              resultingGrid.add(grabbedTile);
-              indexFilled = true;
-            }
+            leftTile = resultingGrid[currentIndex - 1];
           }
+          //get bottom tile
+          Tile bottomTile;
+          if (current_y - 1 == -1) {
+            bottomTile = bottomGlueRow[currentGlueRowPointer];
+          } else {
+            bottomTile = resultingGrid[currentIndex - x];
+          }
+
+          //compare if the tile glues match the current grabbed tile
+
         }
       }
       z_index++;
