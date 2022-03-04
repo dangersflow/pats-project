@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:pats_project/components/tile.dart';
 
@@ -11,6 +12,7 @@ class PATSSimulation {
   final List<Tile> leftGlueColumn;
   final List<Tile> bottomGlueRow;
   final List<Tile> resultingGrid;
+  final List<Tile> tilePool;
   PATSSimulation({
     required this.x,
     required this.y,
@@ -18,6 +20,7 @@ class PATSSimulation {
     required this.leftGlueColumn,
     required this.bottomGlueRow,
     required this.resultingGrid,
+    required this.tilePool,
   });
 
   PATSSimulation copyWith({
@@ -27,6 +30,7 @@ class PATSSimulation {
     List<Tile>? leftGlueColumn,
     List<Tile>? bottomGlueRow,
     List<Tile>? resultingGrid,
+    List<Tile>? tilePool,
   }) {
     return PATSSimulation(
       x: x ?? this.x,
@@ -35,6 +39,7 @@ class PATSSimulation {
       leftGlueColumn: leftGlueColumn ?? this.leftGlueColumn,
       bottomGlueRow: bottomGlueRow ?? this.bottomGlueRow,
       resultingGrid: resultingGrid ?? this.resultingGrid,
+      tilePool: tilePool ?? this.tilePool,
     );
   }
 
@@ -46,6 +51,7 @@ class PATSSimulation {
       'leftGlueColumn': leftGlueColumn.map((x) => x.toMap()).toList(),
       'bottomGlueRow': bottomGlueRow.map((x) => x.toMap()).toList(),
       'resultingGrid': resultingGrid.map((x) => x.toMap()).toList(),
+      'tilePool': tilePool.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -60,6 +66,7 @@ class PATSSimulation {
           List<Tile>.from(map['bottomGlueRow']?.map((x) => Tile.fromMap(x))),
       resultingGrid:
           List<Tile>.from(map['resultingGrid']?.map((x) => Tile.fromMap(x))),
+      tilePool: List<Tile>.from(map['tilePool']?.map((x) => Tile.fromMap(x))),
     );
   }
 
@@ -70,13 +77,12 @@ class PATSSimulation {
 
   @override
   String toString() {
-    return 'PATSSimulation(x: $x, y: $y, mainGrid: $mainGrid, leftGlueColumn: $leftGlueColumn, bottomGlueRow: $bottomGlueRow, resultingGrid: $resultingGrid)';
+    return 'PATSSimulation(x: $x, y: $y, mainGrid: $mainGrid, leftGlueColumn: $leftGlueColumn, bottomGlueRow: $bottomGlueRow, resultingGrid: $resultingGrid, tilePool: $tilePool)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    final listEquals = const DeepCollectionEquality().equals;
 
     return other is PATSSimulation &&
         other.x == x &&
@@ -84,7 +90,8 @@ class PATSSimulation {
         listEquals(other.mainGrid, mainGrid) &&
         listEquals(other.leftGlueColumn, leftGlueColumn) &&
         listEquals(other.bottomGlueRow, bottomGlueRow) &&
-        listEquals(other.resultingGrid, resultingGrid);
+        listEquals(other.resultingGrid, resultingGrid) &&
+        listEquals(other.tilePool, tilePool);
   }
 
   @override
@@ -94,10 +101,48 @@ class PATSSimulation {
         mainGrid.hashCode ^
         leftGlueColumn.hashCode ^
         bottomGlueRow.hashCode ^
-        resultingGrid.hashCode;
+        resultingGrid.hashCode ^
+        tilePool.hashCode;
   }
 
-  // Map<Tile> simulate(){
+  void simulate() {
+    //perform simulation
+    int z_index = 0;
+    int currentGridIndex = x * y;
 
-  // }
+    for (int current_x = 0; current_x < x; current_x++) {
+      for (int current_y = 0; current_y < y; current_y++) {
+        //go through the row
+        int currentIndex = current_x * x + current_y;
+        bool indexFilled = false;
+
+        while (!indexFilled) {
+          //grab a random tile from the tile pool
+          List<Tile> sample = tilePool.sample(1);
+          Tile grabbedTile = sample[0];
+
+          //check if grabbed tile is able to be placed in current position
+
+          //if z-index is 0, then check the glues of the bottom platform
+          if (z_index == 0) {
+            //check if glues line up
+            if (leftGlueColumn[z_index].glues!['E'] ==
+                    grabbedTile.glues!['W'] &&
+                bottomGlueRow[z_index].glues!['N'] == grabbedTile.glues!['S']) {
+              resultingGrid.add(grabbedTile);
+              indexFilled = true;
+            }
+          } else {
+            if (leftGlueColumn[z_index].glues!['E'] ==
+                    grabbedTile.glues!['W'] &&
+                bottomGlueRow[z_index].glues!['N'] == grabbedTile.glues!['S']) {
+              resultingGrid.add(grabbedTile);
+              indexFilled = true;
+            }
+          }
+        }
+      }
+      z_index++;
+    }
+  }
 }

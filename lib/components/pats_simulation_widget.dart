@@ -4,6 +4,7 @@ import 'package:pats_project/components/pats_simulation.dart';
 import 'package:pats_project/components/pattern_display.dart';
 import 'package:pats_project/components/tile.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pats_project/components/tile_pool_with_anim.dart';
 
 class PATSSimulationWidget extends StatefulWidget {
   List<Tile> grid;
@@ -61,18 +62,19 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
         mainGrid: widget.grid,
         leftGlueColumn: widget.leftGlueColumn,
         bottomGlueRow: widget.bottomGlueRow,
-        resultingGrid: resultingGrid);
+        resultingGrid: resultingGrid,
+        tilePool: widget.tilePool);
     List<Tile> transparancyGrid = TileGridToTransparentTileGrid(widget.grid);
     gridMap = convertGridToMap(transparancyGrid);
 
     return LayoutGrid(
       areas: '''
-      .       .       .         .       .     .
-      .       pattern pattern   .       bag   .
-      .       pattern pattern   .       bag   .
-      .       .       .         .       .     .
+      .       .       .         .       .      .
+      .       pattern pattern   bag     bag    .
+      .       pattern pattern   bag     bag    .
+      .       .       .         button  button .
       ''',
-      columnSizes: [0.5.fr, 1.fr, 1.fr, 1.fr, 1.fr, 0.5.fr],
+      columnSizes: [0.1.fr, 1.fr, 1.fr, 1.fr, 1.fr, 0.2.fr],
       rowSizes: [0.2.fr, 1.fr, 1.fr, 0.2.fr],
       children: [
         Center(
@@ -87,6 +89,17 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
             ),
           ),
         ).inGridArea('pattern'),
+        Center(child: TilePoolWithAnim(mainTilePool: widget.tilePool))
+            .inGridArea('bag'),
+        Row(
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  mainSimulation.simulate();
+                },
+                child: Text("Start Simulation!"))
+          ],
+        ).inGridArea('button')
       ],
     );
   }

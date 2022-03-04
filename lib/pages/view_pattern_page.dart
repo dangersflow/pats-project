@@ -89,7 +89,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
           color: Colors.red,
           showBorder: true,
           showGlues: true,
-          glues: const {'N': 'X', 'S': ' ', 'E': ' ', 'W': ' '},
+          glues: const {'N': '0', 'S': ' ', 'E': ' ', 'W': ' '},
         ));
       }
       bottomTileRow = tempArray;
@@ -104,7 +104,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
           color: Colors.red,
           showBorder: true,
           showGlues: true,
-          glues: const {'N': ' ', 'S': ' ', 'E': 'X', 'W': ' '},
+          glues: const {'N': ' ', 'S': ' ', 'E': '0', 'W': ' '},
         ));
       }
       leftTileColumn = tempArray;

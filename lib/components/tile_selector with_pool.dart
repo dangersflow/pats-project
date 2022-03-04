@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:motion_toast/motion_toast.dart';
@@ -85,7 +86,7 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
         buttons
         ''',
       columnSizes: [1.fr],
-      rowSizes: [1.fr, 1.fr, 0.05.fr],
+      rowSizes: [1.2.fr, 1.fr, 0.05.fr],
       children: [
         Center(
           child: Wrap(clipBehavior: Clip.antiAlias, children: [
@@ -111,6 +112,12 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                           width: MediaQuery.of(context).size.width * 0.05,
                           child: TextField(
                             controller: up,
+                            keyboardType: TextInputType.number,
+                            maxLength: 2,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
                             decoration: InputDecoration(
                               labelText: 'Up',
                               border: OutlineInputBorder(
@@ -128,6 +135,12 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                           width: MediaQuery.of(context).size.width * 0.05,
                           child: TextField(
                             controller: left,
+                            keyboardType: TextInputType.number,
+                            maxLength: 2,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
                             decoration: InputDecoration(
                               labelText: 'Left',
                               border: OutlineInputBorder(
@@ -135,7 +148,7 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                             ),
                           ),
                         ),
-                        Padding(padding: EdgeInsets.fromLTRB(0, 0, 30, 0)),
+                        Padding(padding: EdgeInsets.fromLTRB(0, 0, 50, 0)),
                         widget.hasSelectedTile
                             ? SizedBox(
                                 height:
@@ -152,11 +165,17 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                                 decoration: BoxDecoration(
                                     border: Border.all(color: Colors.black)),
                               ),
-                        Padding(padding: EdgeInsets.fromLTRB(30, 0, 0, 0)),
+                        Padding(padding: EdgeInsets.fromLTRB(50, 0, 0, 0)),
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.05,
                           child: TextField(
                             controller: right,
+                            keyboardType: TextInputType.number,
+                            maxLength: 2,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
                             decoration: InputDecoration(
                               labelText: 'Right',
                               border: OutlineInputBorder(
@@ -174,6 +193,12 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                           width: MediaQuery.of(context).size.width * 0.05,
                           child: TextField(
                             controller: down,
+                            keyboardType: TextInputType.number,
+                            maxLength: 2,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9]')),
+                            ],
                             decoration: InputDecoration(
                               labelText: 'Down',
                               border: OutlineInputBorder(
