@@ -15,6 +15,7 @@ class TileSelectorWithPool extends StatefulWidget {
   Function(Tile)? addTileToPool;
   Function()? hideTileSetEntry;
   Function()? onAddEntry;
+  Function(Tile)? removeTileFromPool;
   List<Tile> tilePool;
   List<Tile> finalTilePool;
   Tile currentTileSelected;
@@ -28,7 +29,8 @@ class TileSelectorWithPool extends StatefulWidget {
       required this.hasSelectedTile,
       required this.finalTilePool,
       this.onAddEntry,
-      this.hideTileSetEntry})
+      this.hideTileSetEntry,
+      this.removeTileFromPool})
       : super(key: key);
 
   @override
@@ -263,6 +265,8 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                           mainTilePool: widget.finalTilePool,
                           height: MediaQuery.of(context).size.height * 0.35,
                           width: MediaQuery.of(context).size.width * 0.2,
+                          deleteTiles: true,
+                          removeTile: widget.removeTileFromPool,
                         )
                       ],
                     ))

@@ -83,11 +83,13 @@ class _TileSelectorState extends State<TileSelector> {
                     columnSizes: [1.fr],
                     rowSizes: [1.fr, 1.fr, 1.fr, 0.7.fr],
                     children: [
-                      ColorPicker(
-                        pickerColor: pickerColor,
-                        onColorChanged: changeColor,
-                        hexInputBar: true,
-                        hexInputController: textController,
+                      FittedBox(
+                        child: ColorPicker(
+                          pickerColor: pickerColor,
+                          onColorChanged: changeColor,
+                          hexInputBar: true,
+                          hexInputController: textController,
+                        ),
                       ).inGridArea('colorPicker'),
                       Row(
                         children: [

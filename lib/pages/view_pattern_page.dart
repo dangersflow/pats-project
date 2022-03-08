@@ -118,6 +118,12 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
     });
   }
 
+  void removeTileFromFinalPool(Tile tile) {
+    setState(() {
+      finalSelectedTilePool.remove(tile);
+    });
+  }
+
   void changeCurrentTile(Color color) {
     setState(() {
       currentlySelectedTile = Tile(color: color);
@@ -304,6 +310,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                         addTileToPool: addTileToFinalPool,
                         hideTileSetEntry: hideTileSetEntry,
                         onAddEntry: showSimulation,
+                        removeTileFromPool: removeTileFromFinalPool,
                       )
                     : Leaderboard(
                         listData: leaderboard,
