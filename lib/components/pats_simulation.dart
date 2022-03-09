@@ -13,6 +13,7 @@ class PATSSimulation {
   final List<Tile> bottomGlueRow;
   final List<Tile> resultingGrid;
   final List<Tile> tilePool;
+  Function(List<Tile>)? setResultingGrid;
   PATSSimulation({
     required this.x,
     required this.y,
@@ -21,6 +22,7 @@ class PATSSimulation {
     required this.bottomGlueRow,
     required this.resultingGrid,
     required this.tilePool,
+    this.setResultingGrid,
   });
 
   PATSSimulation copyWith({
@@ -31,6 +33,7 @@ class PATSSimulation {
     List<Tile>? bottomGlueRow,
     List<Tile>? resultingGrid,
     List<Tile>? tilePool,
+    Function(List<Tile>)? setResultingGrid,
   }) {
     return PATSSimulation(
       x: x ?? this.x,
@@ -40,6 +43,7 @@ class PATSSimulation {
       bottomGlueRow: bottomGlueRow ?? this.bottomGlueRow,
       resultingGrid: resultingGrid ?? this.resultingGrid,
       tilePool: tilePool ?? this.tilePool,
+      setResultingGrid: setResultingGrid ?? this.setResultingGrid,
     );
   }
 
@@ -77,7 +81,7 @@ class PATSSimulation {
 
   @override
   String toString() {
-    return 'PATSSimulation(x: $x, y: $y, mainGrid: $mainGrid, leftGlueColumn: $leftGlueColumn, bottomGlueRow: $bottomGlueRow, resultingGrid: $resultingGrid, tilePool: $tilePool)';
+    return 'PATSSimulation(x: $x, y: $y, mainGrid: $mainGrid, leftGlueColumn: $leftGlueColumn, bottomGlueRow: $bottomGlueRow, resultingGrid: $resultingGrid, tilePool: $tilePool, setResultingGrid: $setResultingGrid)';
   }
 
   @override
@@ -91,7 +95,8 @@ class PATSSimulation {
         listEquals(other.leftGlueColumn, leftGlueColumn) &&
         listEquals(other.bottomGlueRow, bottomGlueRow) &&
         listEquals(other.resultingGrid, resultingGrid) &&
-        listEquals(other.tilePool, tilePool);
+        listEquals(other.tilePool, tilePool) &&
+        other.setResultingGrid == setResultingGrid;
   }
 
   @override
@@ -102,7 +107,8 @@ class PATSSimulation {
         leftGlueColumn.hashCode ^
         bottomGlueRow.hashCode ^
         resultingGrid.hashCode ^
-        tilePool.hashCode;
+        tilePool.hashCode ^
+        setResultingGrid.hashCode;
   }
 
   void simulate() {
@@ -115,7 +121,7 @@ class PATSSimulation {
     for (int current_y = 0; current_y < y; current_y++) {
       for (int current_x = 0; current_x < x; current_x++) {
         //go through the row
-        int currentIndex = current_x * x + current_y;
+        int currentIndex = current_y * y + current_x;
         bool indexFilled = false;
 
         while (!indexFilled) {
@@ -141,10 +147,18 @@ class PATSSimulation {
           }
 
           //compare if the tile glues match the current grabbed tile
-
+          if (grabbedTile.glues!['W'] == leftTile.glues!['E'] &&
+              grabbedTile.glues!['S'] == bottomTile.glues!['N']) {
+            //if it does, place the tile in the resulting grid
+            grabbedTile.showGlues = true;
+            resultingGrid.add(grabbedTile);
+            indexFilled = true;
+            currentGlueRowPointer++;
+          }
         }
       }
       z_index++;
+      currentGlueColumnPointer++;
     }
   }
 }

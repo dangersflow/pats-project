@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:pats_project/components/pats_simulation.dart';
@@ -30,7 +31,11 @@ class PATSSimulationWidget extends StatefulWidget {
 class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
   List<Tile> resultingGrid = [];
   List<Map> gridMap = [];
-
+  List<Map> resultingGridMap = [];
+  List<Tile> transparancyGrid = [];
+  bool performAnimation = false;
+  bool verification = false;
+  bool isSimulating = false;
   List<Map> convertGridToMap(List<Tile> grid) {
     List<Map> tempList = [];
 
@@ -54,6 +59,43 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
     return temp;
   }
 
+  void setResultingGrid(List<Tile> grid) {
+    setState(() {
+      resultingGrid = grid;
+      resultingGridMap = convertGridToMap(grid);
+      print("here I am :)");
+      print(resultingGridMap);
+    });
+
+    setState(() {
+      performAnimation = true;
+      gridMap = resultingGridMap;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    List<Tile> transparancyGrid = TileGridToTransparentTileGrid(widget.grid);
+    gridMap = convertGridToMap(transparancyGrid);
+  }
+
+  //check if the resulting grid and the grid are the same
+  bool checkIfSame(List<Map> grid1, List<Map> grid2) {
+    if (grid1.length != grid2.length) {
+      return false;
+    }
+
+    for (int i = 0; i < grid1.length; i++) {
+      if (grid1[i]['color'] != grid2[i]['color']) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     PATSSimulation mainSimulation = PATSSimulation(
@@ -63,43 +105,69 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
         leftGlueColumn: widget.leftGlueColumn,
         bottomGlueRow: widget.bottomGlueRow,
         resultingGrid: resultingGrid,
-        tilePool: widget.tilePool);
-    List<Tile> transparancyGrid = TileGridToTransparentTileGrid(widget.grid);
-    gridMap = convertGridToMap(transparancyGrid);
+        tilePool: widget.tilePool,
+        setResultingGrid: setResultingGrid);
 
-    return LayoutGrid(
-      areas: '''
+    return Stack(
+      children: [
+        LayoutGrid(
+          areas: '''
       .       .       .         .       .      .
       .       pattern pattern   bag     bag    .
       .       pattern pattern   bag     bag    .
       .       .       .         button  button .
       ''',
-      columnSizes: [0.1.fr, 1.fr, 1.fr, 1.fr, 1.fr, 0.2.fr],
-      rowSizes: [0.2.fr, 1.fr, 1.fr, 0.2.fr],
-      children: [
-        Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.3,
-            child: PatternDisplay(
-              x: widget.x,
-              y: widget.y,
-              grid: gridMap,
-              col: widget.leftGlueColumn,
-              row: widget.bottomGlueRow,
-            ),
-          ),
-        ).inGridArea('pattern'),
-        Center(child: TilePoolWithAnim(mainTilePool: widget.tilePool))
-            .inGridArea('bag'),
-        Row(
+          columnSizes: [0.1.fr, 1.fr, 1.fr, 1.fr, 1.fr, 0.2.fr],
+          rowSizes: [0.2.fr, 1.fr, 1.fr, 0.2.fr],
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  mainSimulation.simulate();
-                },
-                child: Text("Start Simulation!"))
+            Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: PatternDisplay(
+                  x: widget.x,
+                  y: widget.y,
+                  grid: gridMap,
+                  col: widget.leftGlueColumn,
+                  row: widget.bottomGlueRow,
+                  doAnim: performAnimation,
+                ),
+              ),
+            ).inGridArea('pattern'),
+            Center(child: TilePoolWithAnim(mainTilePool: widget.tilePool))
+                .inGridArea('bag'),
+            Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      mainSimulation.simulate();
+                      setResultingGrid(mainSimulation.resultingGrid);
+                    },
+                    child: Text("Start Simulation!")),
+                ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        verification = checkIfSame(resultingGridMap, gridMap);
+                        isSimulating = false;
+                      });
+                    },
+                    child: Text("Verify"))
+              ],
+            ).inGridArea('button')
           ],
-        ).inGridArea('button')
+        ),
+        !isSimulating && verification
+            ? Expanded(
+                child: Container(
+                  color: Color.fromARGB(78, 9, 141, 20),
+                  child: SizedBox(
+                    child: ZoomIn(
+                      child: Icon(Icons.verified),
+                      animate: verification,
+                    ),
+                  ),
+                ),
+              )
+            : Container(),
       ],
     );
   }

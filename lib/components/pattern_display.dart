@@ -7,13 +7,15 @@ class PatternDisplay extends StatefulWidget {
   List<Map>? grid;
   List<Tile>? col;
   List<Tile>? row;
+  bool doAnim;
   PatternDisplay(
       {Key? key,
       required this.x,
       required this.y,
       this.grid,
       this.col,
-      this.row})
+      this.row,
+      this.doAnim = false})
       : super(key: key);
 
   @override
@@ -38,6 +40,7 @@ class _PatternDisplayState extends State<PatternDisplay> {
     double increments = (totalTime / widget.x);
     double colDelay = 0;
     double rowDelay = 0;
+    int currentDelay = 250;
     return widget.grid!.isEmpty
         ? Container()
         : GridView.builder(
@@ -78,13 +81,27 @@ class _PatternDisplayState extends State<PatternDisplay> {
                     child: widget.row![rowCounter]);
               } else {
                 gridCounter++;
-                return Tile(
-                  x: widget.grid![gridCounter]['x'],
-                  y: widget.grid![gridCounter]['y'],
-                  id: widget.grid![gridCounter]['id'],
-                  showBorder: widget.grid![gridCounter]['showBorder'],
-                  color: Color(widget.grid![gridCounter]['color']),
-                );
+                return widget.doAnim == false
+                    ? Tile(
+                        x: widget.grid![gridCounter]['x'],
+                        y: widget.grid![gridCounter]['y'],
+                        id: widget.grid![gridCounter]['id'],
+                        glues: widget.grid![gridCounter]['glues'],
+                        showGlues: widget.grid![gridCounter]['showGlues'],
+                        showBorder: widget.grid![gridCounter]['showBorder'],
+                        color: Color(widget.grid![gridCounter]['color']),
+                      )
+                    : ZoomIn(
+                        delay: Duration(milliseconds: currentDelay += 250),
+                        child: Tile(
+                          x: widget.grid![gridCounter]['x'],
+                          y: widget.grid![gridCounter]['y'],
+                          id: widget.grid![gridCounter]['id'],
+                          glues: widget.grid![gridCounter]['glues'],
+                          showGlues: widget.grid![gridCounter]['showGlues'],
+                          showBorder: widget.grid![gridCounter]['showBorder'],
+                          color: Color(widget.grid![gridCounter]['color']),
+                        ));
               }
             },
           );
