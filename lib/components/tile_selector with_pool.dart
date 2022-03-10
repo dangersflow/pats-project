@@ -218,7 +218,8 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                   children: [
                     ElevatedButton(
                         onPressed: () {
-                          Tile newTile = widget.currentTileSelected;
+                          Map tile = widget.currentTileSelected.toMap();
+                          Tile newTile = Tile.fromMap(tile);
                           newTile.glues = {
                             'N': up.text,
                             'S': down.text,
