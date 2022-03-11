@@ -91,7 +91,7 @@ class _PatternDisplayState extends State<PatternDisplay> {
                         showBorder: widget.grid![gridCounter]['showBorder'],
                         color: Color(widget.grid![gridCounter]['color']),
                       )
-                    : ZoomIn(
+                    : FadeInRight(
                         delay: Duration(milliseconds: currentDelay += 250),
                         child: Tile(
                           x: widget.grid![gridCounter]['x'],

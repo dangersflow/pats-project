@@ -64,6 +64,7 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
       resultingGrid = grid;
       resultingGridMap = convertGridToMap(grid);
       print("here I am :)");
+      print("wpw");
       print(resultingGridMap);
     });
 
@@ -156,15 +157,13 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
           ],
         ),
         !isSimulating && verification
-            ? Expanded(
-                child: Container(
-                  color: Color.fromARGB(78, 9, 141, 20),
-                  child: SizedBox(
-                    child: ZoomIn(
-                      child: Icon(Icons.verified),
-                      animate: verification,
-                    ),
+            ? Center(
+                child: ZoomIn(
+                  child: Icon(
+                    Icons.verified,
+                    size: MediaQuery.of(context).size.width * 0.2,
                   ),
+                  animate: verification,
                 ),
               )
             : Container(),
