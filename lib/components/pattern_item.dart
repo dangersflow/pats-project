@@ -63,7 +63,7 @@ class _PatternItemState extends State<PatternItem> {
               child: Text(
                 widget.projectTitle,
                 style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.010),
+                    fontSize: MediaQuery.of(context).size.width * 0.009),
               ),
             ).inGridArea('name')
           ],

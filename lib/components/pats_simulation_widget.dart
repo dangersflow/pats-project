@@ -1,6 +1,8 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
+import 'package:pats_project/components/leaderboard_entry_card.dart';
 import 'package:pats_project/components/pats_simulation.dart';
 import 'package:pats_project/components/pattern_display.dart';
 import 'package:pats_project/components/tile.dart';
@@ -35,7 +37,7 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
   List<Tile> transparancyGrid = [];
   bool performAnimation = false;
   bool verification = false;
-  bool isSimulating = false;
+  bool simulationFinished = false;
   List<Map> convertGridToMap(List<Tile> grid) {
     List<Map> tempList = [];
 
@@ -78,7 +80,7 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    List<Tile> transparancyGrid = TileGridToTransparentTileGrid(widget.grid);
+    transparancyGrid = TileGridToTransparentTileGrid(widget.grid);
     gridMap = convertGridToMap(transparancyGrid);
   }
 
@@ -92,6 +94,14 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
       if (grid1[i]['color'] != grid2[i]['color']) {
         return false;
       }
+    }
+
+    return true;
+  }
+
+  bool checkIfSameLength(List<Map> grid1, List<Map> grid2) {
+    if (grid1.length != grid2.length) {
+      return false;
     }
 
     return true;
@@ -114,59 +124,154 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
         LayoutGrid(
           areas: '''
       .       .       .         .       .      .
-      .       pattern pattern   bag     bag    .
-      .       pattern pattern   bag     bag    .
-      .       .       .         button  button .
+      .       pattern pattern   button  button .
+      .       pattern pattern   button  button .
+      .       bag     bag       button  button .
+      .       .       .         .       .      .  
       ''',
-          columnSizes: [0.1.fr, 1.fr, 1.fr, 1.fr, 1.fr, 0.2.fr],
-          rowSizes: [0.2.fr, 1.fr, 1.fr, 0.2.fr],
+          columnSizes: [
+            0.1.fr,
+            1.fr,
+            1.fr,
+            1.fr,
+            1.fr,
+            0.2.fr,
+          ],
+          rowSizes: [0.2.fr, 1.fr, 0.7.fr, 1.fr, 0.2.fr],
           children: [
             Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: PatternDisplay(
-                  x: widget.x,
-                  y: widget.y,
-                  grid: gridMap,
-                  col: widget.leftGlueColumn,
-                  row: widget.bottomGlueRow,
-                  doAnim: performAnimation,
+              child: FittedBox(
+                child: Column(
+                  children: [
+                    Text("Grid",
+                        style: TextStyle(
+                            fontSize:
+                                MediaQuery.of(context).size.width * 0.013)),
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0,
+                                MediaQuery.of(context).size.width * 0.03, 0)),
+                        Center(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            child: PatternDisplay(
+                              x: widget.x,
+                              y: widget.y,
+                              grid: gridMap,
+                              col: widget.leftGlueColumn,
+                              row: widget.bottomGlueRow,
+                              doAnim: performAnimation,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
                 ),
               ),
             ).inGridArea('pattern'),
-            Center(child: TilePoolWithAnim(mainTilePool: widget.tilePool))
-                .inGridArea('bag'),
-            Row(
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      mainSimulation.simulate();
-                      setResultingGrid(mainSimulation.resultingGrid);
-                    },
-                    child: Text("Start Simulation!")),
-                ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        verification = checkIfSame(resultingGridMap, gridMap);
-                        isSimulating = false;
-                      });
-                    },
-                    child: Text("Verify"))
-              ],
+            Center(
+              child: FittedBox(
+                child: Column(
+                  children: [
+                    Text("Your Tile Pool",
+                        style: TextStyle(
+                            fontSize:
+                                MediaQuery.of(context).size.width * 0.015)),
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0,
+                                MediaQuery.of(context).size.width * 0.07, 0)),
+                        Center(
+                            child: TilePoolWithAnim(
+                                mainTilePool: widget.tilePool)),
+                      ],
+                    )
+                  ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+              ),
+            ).inGridArea('bag'),
+            Center(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: PageTransitionSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        reverse: !simulationFinished,
+                        child: simulationFinished
+                            ? LeaderboardEntryCard(
+                                verification: verification,
+                                addToLeaderboard: (Map object) {},
+                              )
+                            : ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.all(20)),
+                                onPressed: () {
+                                  mainSimulation.simulateInOrder();
+
+                                  List<Map> temp = convertGridToMap(
+                                      mainSimulation.resultingGrid);
+                                  //check if the resulting grid has the same length as the grid
+                                  //if so, fill the remaining space with the trasparent tiles
+                                  if (!checkIfSameLength(temp, gridMap)) {
+                                    mainSimulation
+                                        .fillRemainingSpace(transparancyGrid);
+                                  }
+
+                                  setResultingGrid(
+                                      mainSimulation.resultingGrid);
+
+                                  //verification
+                                  setState(() {
+                                    verification =
+                                        checkIfSame(resultingGridMap, temp);
+                                    print(verification);
+                                    simulationFinished = true;
+                                  });
+                                },
+                                child: Text(
+                                  "Start Simulation!",
+                                  style: TextStyle(fontSize: 22),
+                                )),
+                        transitionBuilder:
+                            (child, primaryAnimation, secondaryAnimation) {
+                          return SharedAxisTransition(
+                            animation: primaryAnimation,
+                            secondaryAnimation: secondaryAnimation,
+                            transitionType: SharedAxisTransitionType.horizontal,
+                            child: child,
+                          );
+                        }),
+                  ),
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       setState(() {
+                  //         verification = checkIfSame(resultingGridMap, gridMap);
+                  //         isSimulating = false;
+                  //       });
+                  //     },
+                  //     child: Text("Verify"))
+                ],
+                mainAxisAlignment: MainAxisAlignment.center,
+              ),
             ).inGridArea('button')
           ],
         ),
-        !isSimulating && verification
-            ? Center(
-                child: ZoomIn(
-                  child: Icon(
-                    Icons.verified,
-                    size: MediaQuery.of(context).size.width * 0.2,
-                  ),
-                  animate: verification,
-                ),
-              )
-            : Container(),
+        // !isSimulating && verification
+        //     ? Center(
+        //         child: ZoomIn(
+        //           child: Icon(
+        //             Icons.verified,
+        //             size: MediaQuery.of(context).size.width * 0.2,
+        //           ),
+        //           animate: verification,
+        //         ),
+        //       )
+        //     : Container(),
       ],
     );
   }

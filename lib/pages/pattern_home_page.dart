@@ -91,7 +91,7 @@ class _PatternHomePageState extends State<PatternHomePage> {
                   return GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 7, childAspectRatio: 0.85),
+                            crossAxisCount: 8, childAspectRatio: 0.85),
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (BuildContext context, int index) {
                       print(snapshot.data.docs[index].data()['image']);
