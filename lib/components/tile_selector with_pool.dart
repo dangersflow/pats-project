@@ -18,7 +18,7 @@ class TileSelectorWithPool extends StatefulWidget {
   Function(Tile)? removeTileFromPool;
   List<Tile> tilePool;
   List<Tile> finalTilePool;
-  Tile currentTileSelected;
+  Tile? currentTileSelected;
   bool hasSelectedTile;
   TileSelectorWithPool(
       {Key? key,
@@ -84,156 +84,244 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
         child: LayoutGrid(
       areas: '''
         tileWithGlues
+        .
         tileSelector
+        .
         buttons
         ''',
       columnSizes: [1.fr],
-      rowSizes: [1.2.fr, 1.fr, 0.05.fr],
+      rowSizes: [1.2.fr, 0.05.fr, 1.fr, 0.05.fr, 0.1.fr],
       children: [
         Center(
           child: Wrap(clipBehavior: Clip.antiAlias, children: [
-            Row(
+            Column(
               children: [
-                Column(
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Add Glues",
-                          style: TextStyle(
-                              fontSize: (MediaQuery.of(context).size.height +
-                                      MediaQuery.of(context).size.width) *
-                                  0.006),
-                        )
-                      ],
-                    ),
-                    Divider(endIndent: MediaQuery.of(context).size.width * 0.3),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          child: TextField(
-                            controller: up,
-                            keyboardType: TextInputType.number,
-                            maxLength: 2,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Up',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                            ),
-                          ),
-                        ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                    Padding(padding: EdgeInsets.fromLTRB(0, 0, 0, 30)),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          child: TextField(
-                            controller: left,
-                            keyboardType: TextInputType.number,
-                            maxLength: 2,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Left',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                            ),
-                          ),
-                        ),
-                        Padding(padding: EdgeInsets.fromLTRB(0, 0, 50, 0)),
-                        widget.hasSelectedTile
-                            ? SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.18,
-                                width:
-                                    MediaQuery.of(context).size.height * 0.18,
-                                child: widget.currentTileSelected,
-                              )
-                            : Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.18,
-                                width:
-                                    MediaQuery.of(context).size.height * 0.18,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black)),
-                              ),
-                        Padding(padding: EdgeInsets.fromLTRB(50, 0, 0, 0)),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          child: TextField(
-                            controller: right,
-                            keyboardType: TextInputType.number,
-                            maxLength: 2,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Right',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                            ),
-                          ),
-                        )
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
-                    Padding(padding: EdgeInsets.fromLTRB(0, 30, 0, 0)),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          child: TextField(
-                            controller: down,
-                            keyboardType: TextInputType.number,
-                            maxLength: 2,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Down',
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                            ),
-                          ),
-                        ),
-                      ],
-                      mainAxisAlignment: MainAxisAlignment.center,
-                    ),
+                    Text(
+                      "Add Glues",
+                      style: TextStyle(
+                          fontSize: (MediaQuery.of(context).size.height +
+                                  MediaQuery.of(context).size.width) *
+                              0.006),
+                    )
                   ],
                 ),
-                //column to add tile with glues
-                Column(
+                Divider(endIndent: MediaQuery.of(context).size.width * 0.3),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Map tile = widget.currentTileSelected.toMap();
-                          Tile newTile = Tile.fromMap(tile);
-                          newTile.glues = {
-                            'N': up.text,
-                            'S': down.text,
-                            'E': right.text,
-                            'W': left.text
-                          };
-                          newTile.showGlues = true;
-                          widget.addTileToPool!(newTile);
-                        },
-                        child: Text("Add Tile"))
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              child: TextField(
+                                controller: up,
+                                keyboardType: TextInputType.number,
+                                maxLength: 2,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                ],
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.008),
+                                decoration: InputDecoration(
+                                  labelText: 'Up',
+                                  labelStyle: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.008),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                              ),
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0,
+                                MediaQuery.of(context).size.width * 0.006)),
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              child: TextField(
+                                controller: left,
+                                keyboardType: TextInputType.number,
+                                maxLength: 2,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                ],
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.008),
+                                decoration: InputDecoration(
+                                  labelText: 'Left',
+                                  labelStyle: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.008),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    0,
+                                    0,
+                                    MediaQuery.of(context).size.width * 0.015,
+                                    0)),
+                            widget.hasSelectedTile
+                                ? SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.18,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.18,
+                                    child: widget.currentTileSelected,
+                                  )
+                                : Container(
+                                    child: Center(
+                                        child: Text(
+                                      "Select a tile!",
+                                      style: TextStyle(
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.008),
+                                    )),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.18,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.18,
+                                    decoration: BoxDecoration(
+                                        border:
+                                            Border.all(color: Colors.black)),
+                                  ),
+                            Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    MediaQuery.of(context).size.width * 0.015,
+                                    0,
+                                    0,
+                                    0)),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              child: TextField(
+                                controller: right,
+                                keyboardType: TextInputType.number,
+                                maxLength: 2,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                ],
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.008),
+                                decoration: InputDecoration(
+                                  labelText: 'Right',
+                                  labelStyle: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.008),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                              ),
+                            )
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(
+                                0,
+                                MediaQuery.of(context).size.width * 0.01,
+                                0,
+                                0)),
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              width: MediaQuery.of(context).size.width * 0.05,
+                              child: TextField(
+                                controller: down,
+                                keyboardType: TextInputType.number,
+                                maxLength: 2,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                ],
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.width *
+                                            0.008),
+                                decoration: InputDecoration(
+                                  labelText: 'Down',
+                                  labelStyle: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.008),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                              ),
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.009)),
+                            onPressed: () {
+                              if (widget.currentTileSelected!.color ==
+                                  Color.fromARGB(0, 0, 0, 0)) {
+                                MotionToast.error(
+                                  description: Text("Please select a tile!"),
+                                  animationDuration:
+                                      Duration(milliseconds: 100),
+                                  animationCurve: Curves.easeInOutCubic,
+                                  toastDuration: Duration(milliseconds: 1500),
+                                ).show(context);
+                              } else {
+                                Map tile = widget.currentTileSelected!.toMap();
+                                Tile newTile = Tile.fromMap(tile);
+                                newTile.glues = {
+                                  'N': up.text,
+                                  'S': down.text,
+                                  'E': right.text,
+                                  'W': left.text
+                                };
+                                newTile.showGlues = true;
+                                widget.addTileToPool!(newTile);
+                              }
+                            },
+                            child: Text("Add Tile",
+                                style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.height *
+                                            0.012))),
+                      ],
+                    )
                   ],
-                )
+                ),
               ],
-            )
+            ),
+            //row to add tile with glues
           ]),
         ).inGridArea('tileWithGlues'),
         Center(
@@ -260,12 +348,12 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                           mainTilePool: widget.tilePool,
                           changeTile: changeTileInPool,
                           height: MediaQuery.of(context).size.height * 0.35,
-                          width: MediaQuery.of(context).size.width * 0.2,
+                          width: MediaQuery.of(context).size.width * 0.19,
                         ),
                         TilePool(
                           mainTilePool: widget.finalTilePool,
                           height: MediaQuery.of(context).size.height * 0.35,
-                          width: MediaQuery.of(context).size.width * 0.2,
+                          width: MediaQuery.of(context).size.width * 0.19,
                           deleteTiles: true,
                           removeTile: widget.removeTileFromPool,
                         )
@@ -273,6 +361,7 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
                     ))
                   ],
                   mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 )
               ],
             )
@@ -282,7 +371,14 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
           children: [
             Expanded(
                 child: ElevatedButton(
-              child: Text("Cancel Entry"),
+              child: Text(
+                "Cancel Entry",
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.0065),
+              ),
+              style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(
+                      MediaQuery.of(context).size.width * 0.009)),
               onPressed: () {
                 setState(() {
                   widget.hideTileSetEntry!();
@@ -291,12 +387,30 @@ class _TileSelectorWithPoolState extends State<TileSelectorWithPool> {
             )),
             Expanded(
                 child: ElevatedButton(
-              child: Text("Add Entry"),
+              child: Text(
+                "Add Entry",
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.0065),
+              ),
+              style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(
+                      MediaQuery.of(context).size.width * 0.009)),
               onPressed: () {
-                widget.hideTileSetEntry!();
-                widget.onAddEntry != null
-                    ? widget.onAddEntry!()
-                    : print("no on add");
+                if (widget.finalTilePool.isEmpty) {
+                  //error toast
+                  MotionToast.error(
+                    description: Text(
+                      "You must add at least one tile!",
+                    ),
+                    animationDuration: Duration(milliseconds: 100),
+                    animationCurve: Curves.easeInOutCubic,
+                    toastDuration: Duration(milliseconds: 1500),
+                  ).show(context);
+                } else {
+                  widget.onAddEntry != null
+                      ? widget.onAddEntry!()
+                      : print("no on add");
+                }
               },
             ))
           ],

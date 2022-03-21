@@ -16,9 +16,15 @@ class _LeaderboardEntryCardState extends State<LeaderboardEntryCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: widget.verification
-          ? Color.fromARGB(137, 76, 175, 79)
-          : Color.fromARGB(153, 255, 63, 63),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(
+            style: BorderStyle.solid,
+            width: 3,
+            color: widget.verification
+                ? Color.fromARGB(137, 76, 175, 79)
+                : Color.fromARGB(153, 255, 63, 63),
+          )),
       child: Expanded(
           child: Column(children: [
         Expanded(
@@ -27,8 +33,20 @@ class _LeaderboardEntryCardState extends State<LeaderboardEntryCard> {
               widget.verification
                   ? Column(
                       children: [
+                        Text(
+                          "Verification Successful!",
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.008),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(
+                                0,
+                                MediaQuery.of(context).size.height * 0.01,
+                                0,
+                                0)),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.1,
+                          width: MediaQuery.of(context).size.width * 0.2,
                           child: TextField(
                             autofocus: true,
                             decoration: const InputDecoration(
@@ -43,11 +61,79 @@ class _LeaderboardEntryCardState extends State<LeaderboardEntryCard> {
                             },
                           ),
                         ),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(
+                                0,
+                                MediaQuery.of(context).size.height * 0.02,
+                                0,
+                                0)),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.all(20)),
+                                child: Text(
+                                  "Try Again",
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.008),
+                                )),
+                            Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    MediaQuery.of(context).size.width * 0.01,
+                                    0,
+                                    0,
+                                    0)),
+                            ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.all(20)),
+                                child: Text(
+                                  "Submit Submission",
+                                  style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.008),
+                                ))
+                          ],
+                        )
                       ],
                       mainAxisAlignment: MainAxisAlignment.center,
                     )
                   : Column(
-                      children: [Text("Failed to verify :(")],
+                      children: [
+                        Text(
+                          "Failed to verify :(",
+                          style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.008),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(
+                                0,
+                                MediaQuery.of(context).size.height * 0.02,
+                                0,
+                                0)),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.all(20)),
+                                child: Text("Try Again",
+                                    style: TextStyle(
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                                0.008))),
+                          ],
+                        )
+                      ],
                       mainAxisAlignment: MainAxisAlignment.center,
                     )
             ],

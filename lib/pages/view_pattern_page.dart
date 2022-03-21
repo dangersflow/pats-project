@@ -36,7 +36,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   List<Tile> gridTiles = [];
   List<Tile> currentTilePool = [];
   List<Tile> finalSelectedTilePool = [];
-  Tile currentlySelectedTile = Tile(color: Colors.black);
+  Tile currentlySelectedTile = Tile(color: Color.fromARGB(0, 0, 0, 0));
   bool hasATileSelected = false;
   int x = 1;
   int y = 1;
@@ -172,6 +172,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         populateGlues();
         print(leftTileColumn.length);
       });
+      autoPopulateGlues();
     });
   }
 
@@ -222,8 +223,13 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          toolbarHeight: MediaQuery.of(context).size.height * 0.06,
           title: InkWell(
-            child: Text("PATS PROJECT"),
+            child: Text(
+              "PATS PROJECT",
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width * 0.010),
+            ),
             onTap: () {
               context.go('/');
             },
@@ -259,22 +265,22 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
               style:
                   TextStyle(fontSize: MediaQuery.of(context).size.width / 50),
             ).inGridArea('patternHeader'),
-            Row(
-              children: [
-                Wrap(
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            autoPopulateGlues();
-                          });
-                        },
-                        child: Text("Auto Populate Glues"))
-                  ],
-                )
-              ],
-              crossAxisAlignment: CrossAxisAlignment.start,
-            ).inGridArea('buttons'),
+            // Row(
+            //   children: [
+            //     Wrap(
+            //       children: [
+            //         ElevatedButton(
+            //             onPressed: () {
+            //               setState(() {
+            //                 autoPopulateGlues();
+            //               });
+            //             },
+            //             child: Text("Auto Populate Glues"))
+            //       ],
+            //     )
+            //   ],
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            // ).inGridArea('buttons'),
             AnimatedOpacity(
               opacity: gridLoaded && columnLoaded && rowLoaded ? 1 : 0,
               duration: Duration(milliseconds: 400),

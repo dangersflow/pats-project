@@ -30,7 +30,11 @@ class _PatternHomePageState extends State<PatternHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pattern Home Page'),
+        toolbarHeight: MediaQuery.of(context).size.height * 0.06,
+        title: Text(
+          'Pattern Home Page',
+          style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.010),
+        ),
         actions: [
           AppPopupMenu(
             child: Icon(Icons.settings),

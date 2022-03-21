@@ -65,7 +65,15 @@ class _LeaderboardState extends State<Leaderboard> {
           children: [
             Expanded(
                 child: ElevatedButton(
-                    child: Text("Add Entry"), onPressed: widget.onAddEntry)),
+                    style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.009)),
+                    child: Text(
+                      "Add Entry",
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.0065),
+                    ),
+                    onPressed: widget.onAddEntry)),
           ],
         )
       ],
