@@ -65,7 +65,11 @@ class _TilePoolState extends State<TilePool> {
                           : Badge(
                               child: widget.mainTilePool[index],
                               badgeContent: GestureDetector(
-                                child: Icon(Icons.remove),
+                                child: Icon(
+                                  Icons.remove,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.01,
+                                ),
                                 onTap: () {
                                   setState(() {
                                     widget.removeTile!(
