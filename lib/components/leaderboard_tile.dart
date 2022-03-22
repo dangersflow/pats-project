@@ -4,9 +4,12 @@ import 'package:pats_project/components/tile_container.dart';
 class LeaderboardTile extends StatefulWidget {
   int index;
   String name;
-  var tiles;
+  int numTiles;
   LeaderboardTile(
-      {Key? key, required this.index, required this.name, required this.tiles})
+      {Key? key,
+      required this.index,
+      required this.name,
+      required this.numTiles})
       : super(key: key);
 
   @override
@@ -43,7 +46,7 @@ class _LeaderboardTileState extends State<LeaderboardTile> {
                 const Padding(padding: EdgeInsets.fromLTRB(0, 100, 0, 0)),
                 Text(
                   "This user made the pattern in " +
-                      widget.tiles.length.toString() +
+                      widget.numTiles.toString() +
                       " tile/s.",
                   style: TextStyle(
                       fontSize: MediaQuery.of(context).size.height * 0.015),

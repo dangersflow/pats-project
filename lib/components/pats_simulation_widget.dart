@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:animations/animations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:pats_project/components/leaderboard_entry_card.dart';
@@ -8,12 +11,15 @@ import 'package:pats_project/components/pattern_display.dart';
 import 'package:pats_project/components/tile.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pats_project/components/tile_pool_with_anim.dart';
+import 'package:go_router/go_router.dart';
 
 class PATSSimulationWidget extends StatefulWidget {
   List<Tile> grid;
   List<Tile> bottomGlueRow;
   List<Tile> leftGlueColumn;
   List<Tile> tilePool;
+  Function() hideTileSetEntry;
+  String? projectKey;
   int x;
   int y;
   PATSSimulationWidget(
@@ -23,7 +29,9 @@ class PATSSimulationWidget extends StatefulWidget {
       required this.leftGlueColumn,
       required this.tilePool,
       required this.x,
-      required this.y})
+      required this.y,
+      required this.hideTileSetEntry,
+      this.projectKey})
       : super(key: key);
 
   @override
@@ -35,9 +43,14 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
   List<Map> gridMap = [];
   List<Map> resultingGridMap = [];
   List<Tile> transparancyGrid = [];
+  List<Map> currentLeaderboard = [];
+  String projectId = '';
   bool performAnimation = false;
   bool verification = false;
   bool simulationFinished = false;
+  CollectionReference patterns =
+      FirebaseFirestore.instance.collection('patterns');
+
   List<Map> convertGridToMap(List<Tile> grid) {
     List<Map> tempList = [];
 
@@ -46,6 +59,36 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
     }
 
     return tempList;
+  }
+
+  Future<void> addToLeaderboard(Map personObject) async {
+    //first get leaderboard
+    await FirebaseFirestore.instance
+        .collection('patterns')
+        .where('keyPattern', isEqualTo: widget.projectKey!)
+        .get()
+        .then((value) {
+      var jsonData = jsonEncode(value.docs.first.data().toString());
+      var decodedData = jsonDecode(jsonData);
+      print(decodedData);
+      print(value.docs.first.id);
+      projectId = value.docs.first.id;
+      setState(() {
+        List<dynamic>.from(value.docs.first.data()['leaderboard'])
+            .forEach((element) {
+          currentLeaderboard.add(element);
+        });
+      });
+    });
+
+    //add map object to our leaderboard :)
+    currentLeaderboard.add(personObject);
+
+    return patterns
+        .doc(projectId)
+        .update({'leaderboard': currentLeaderboard}).then((value) {
+      context.go('/patterns/' + widget.projectKey.toString());
+    });
   }
 
   List<Tile> TileGridToTransparentTileGrid(List<Tile> grid) {
@@ -205,7 +248,8 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
                         child: simulationFinished
                             ? LeaderboardEntryCard(
                                 verification: verification,
-                                addToLeaderboard: (Map object) {},
+                                numTiles: widget.tilePool.length,
+                                addToLeaderboard: addToLeaderboard,
                               )
                             : ElevatedButton(
                                 style: ElevatedButton.styleFrom(

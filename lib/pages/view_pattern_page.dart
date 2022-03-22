@@ -210,9 +210,11 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
               child: FadeInUp(
                   child: PATSSimulationWidget(
             grid: gridTiles,
+            projectKey: widget.projectKey,
             bottomGlueRow: bottomTileRow,
             leftGlueColumn: leftTileColumn,
             tilePool: finalSelectedTilePool,
+            hideTileSetEntry: hideTileSetEntry,
             x: x,
             y: y,
           )));

@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 class LeaderboardEntryCard extends StatefulWidget {
   bool verification;
+  int numTiles;
   Function(Map) addToLeaderboard;
   LeaderboardEntryCard(
-      {Key? key, required this.verification, required this.addToLeaderboard})
+      {Key? key,
+      required this.verification,
+      required this.addToLeaderboard,
+      required this.numTiles})
       : super(key: key);
 
   @override
@@ -52,13 +56,7 @@ class _LeaderboardEntryCardState extends State<LeaderboardEntryCard> {
                             decoration: const InputDecoration(
                               labelText: "Name",
                             ),
-                            onSubmitted: (value) {
-                              widget.addToLeaderboard({
-                                'user': value,
-                                'tileSet': {'L': 0, 'R': 0, 'U': 0, 'D': 0},
-                              });
-                              // Navigator.of(context).pop();
-                            },
+                            controller: nameController,
                           ),
                         ),
                         Padding(
@@ -89,7 +87,14 @@ class _LeaderboardEntryCardState extends State<LeaderboardEntryCard> {
                                     0,
                                     0)),
                             ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Map mainObject = {
+                                    'name': nameController.text,
+                                    'numTiles': widget.numTiles
+                                  };
+
+                                  widget.addToLeaderboard(mainObject);
+                                },
                                 style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.all(20)),
                                 child: Text(

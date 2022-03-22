@@ -45,8 +45,8 @@ class _LeaderboardState extends State<Leaderboard> {
                   itemBuilder: (context, index) {
                     return LeaderboardTile(
                         index: index + 1,
-                        name: widget.listData[index]['user'],
-                        tiles: widget.listData[index]['tileSet']);
+                        name: widget.listData[index]['name'],
+                        numTiles: widget.listData[index]['numTiles']);
                     /*ListTile(
                 title: Text(
                   '${index + 1}. ${widget.listData[index]['user']}',
