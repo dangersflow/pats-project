@@ -40,49 +40,41 @@ class _LeaderboardState extends State<Leaderboard> {
       columnSizes: [1.fr],
       rowSizes: [1.7.fr, 0.3.fr],
       children: [
-        widget.listData.length < 1
-            ? Center(
-                child: Text("Take a shot at building this pattern!"),
-              ).inGridArea('leaderboard')
-            : Expanded(
-                child: StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection('patterns')
-                        .doc(widget.projectId)
-                        .snapshots(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData) {
-                        print("here is data");
-                        print(snapshot.data!.data()['leaderboard']);
-                        return ListView.builder(
+        Expanded(
+          child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('patterns')
+                  .doc(widget.projectId)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  print("here is data");
+                  print(snapshot.data!.data()['leaderboard']);
+                  return snapshot.data!.data()['leaderboard'].length < 1
+                      ? Center(
+                          child: Text("Take a shot at building this pattern!"),
+                        )
+                      : ListView.builder(
                           itemCount:
                               snapshot.data!.data()['leaderboard'].length,
                           itemBuilder: (context, index) {
-                            if (snapshot.data!.data()['leaderboard'].length <
-                                1) {
-                              return Center(
-                                child: Text(
-                                    "Take a shot at building this pattern!"),
-                              );
-                            } else {
-                              print("I am being repainted at " +
-                                  index.toString());
-                              return LeaderboardTile(
-                                index: index + 1,
-                                name: snapshot.data!.data()['leaderboard']
-                                    [index]['name'],
-                                numTiles: snapshot.data!.data()['leaderboard']
-                                    [index]['numTiles'],
-                              );
-                            }
+                            print(
+                                "I am being repainted at " + index.toString());
+                            return LeaderboardTile(
+                              index: index + 1,
+                              name: snapshot.data!.data()['leaderboard'][index]
+                                  ['name'],
+                              numTiles: snapshot.data!.data()['leaderboard']
+                                  [index]['numTiles'],
+                            );
                           },
                         );
-                      }
-                      return Center(
-                        child: Text("Take a shot at building this pattern!"),
-                      );
-                    }),
-              ).inGridArea('leaderboard'),
+                }
+                return Center(
+                  child: Text("Take a shot at building this pattern!"),
+                );
+              }),
+        ).inGridArea('leaderboard'),
         //make a row with an elevated button that expands to its available space
         Row(
           children: [
