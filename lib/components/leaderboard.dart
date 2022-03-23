@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:pats_project/components/leaderboard_tile.dart';
@@ -6,7 +9,12 @@ import 'package:pats_project/components/tile_container.dart';
 class Leaderboard extends StatefulWidget {
   List<Map> listData;
   Function() onAddEntry;
-  Leaderboard({Key? key, required this.listData, required this.onAddEntry})
+  String projectId;
+  Leaderboard(
+      {Key? key,
+      required this.listData,
+      required this.projectId,
+      required this.onAddEntry})
       : super(key: key);
 
   @override
@@ -18,6 +26,8 @@ class _LeaderboardState extends State<Leaderboard> {
   void initState() {
     //implement initState
     super.initState();
+
+    print("here is id: " + widget.projectId);
   }
 
   @override
@@ -25,40 +35,53 @@ class _LeaderboardState extends State<Leaderboard> {
     return LayoutGrid(
       areas: '''
       leaderboard
-      leaderboard
-      leaderboard
-      leaderboard
-      leaderboard
       button
       ''',
       columnSizes: [1.fr],
-      rowSizes: [1.fr, 1.fr, 1.fr, 1.fr, 1.fr, 1.fr],
+      rowSizes: [1.7.fr, 0.3.fr],
       children: [
         widget.listData.length < 1
             ? Center(
                 child: Text("Take a shot at building this pattern!"),
               ).inGridArea('leaderboard')
             : Expanded(
-                child: ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: widget.listData.length,
-                  itemBuilder: (context, index) {
-                    return LeaderboardTile(
-                        index: index + 1,
-                        name: widget.listData[index]['name'],
-                        numTiles: widget.listData[index]['numTiles']);
-                    /*ListTile(
-                title: Text(
-                  '${index + 1}. ${widget.listData[index]['user']}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  '${widget.listData[index]['tileSet']}',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ); */
-                  },
-                ),
+                child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('patterns')
+                        .doc(widget.projectId)
+                        .snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        print("here is data");
+                        print(snapshot.data!.data()['leaderboard']);
+                        return ListView.builder(
+                          itemCount:
+                              snapshot.data!.data()['leaderboard'].length,
+                          itemBuilder: (context, index) {
+                            if (snapshot.data!.data()['leaderboard'].length <
+                                1) {
+                              return Center(
+                                child: Text(
+                                    "Take a shot at building this pattern!"),
+                              );
+                            } else {
+                              print("I am being repainted at " +
+                                  index.toString());
+                              return LeaderboardTile(
+                                index: index + 1,
+                                name: snapshot.data!.data()['leaderboard']
+                                    [index]['name'],
+                                numTiles: snapshot.data!.data()['leaderboard']
+                                    [index]['numTiles'],
+                              );
+                            }
+                          },
+                        );
+                      }
+                      return Center(
+                        child: Text("Take a shot at building this pattern!"),
+                      );
+                    }),
               ).inGridArea('leaderboard'),
         //make a row with an elevated button that expands to its available space
         Row(

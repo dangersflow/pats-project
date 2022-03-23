@@ -36,6 +36,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   List<Tile> gridTiles = [];
   List<Tile> currentTilePool = [];
   List<Tile> finalSelectedTilePool = [];
+  String projectId = '';
   Tile currentlySelectedTile = Tile(color: Color.fromARGB(0, 0, 0, 0));
   bool hasATileSelected = false;
   int x = 1;
@@ -48,6 +49,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
   bool gridLoaded = false;
   bool columnLoaded = false;
   bool rowLoaded = false;
+  bool idLoaded = false;
 
   @override
   void initState() {
@@ -139,6 +141,11 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
         .then((value) {
       var jsonData = jsonEncode(value.docs.first.data().toString());
       var decodedData = jsonDecode(jsonData);
+
+      setState(() {
+        projectId = value.docs.first.id;
+        idLoaded = true;
+      });
 
       setState(() {
         List<dynamic>.from(value.docs.first.data()['grid']).forEach((element) {
@@ -320,10 +327,13 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
                         onAddEntry: showSimulation,
                         removeTileFromPool: removeTileFromFinalPool,
                       )
-                    : Leaderboard(
-                        listData: leaderboard,
-                        onAddEntry: showTileSetEntry,
-                      ),
+                    : idLoaded
+                        ? Leaderboard(
+                            listData: leaderboard,
+                            projectId: projectId,
+                            onAddEntry: showTileSetEntry,
+                          )
+                        : Container(),
                 transitionBuilder:
                     (child, primaryAnimation, secondaryAnimation) {
                   return SharedAxisTransition(
