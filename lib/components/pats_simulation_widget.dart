@@ -87,7 +87,8 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
     return patterns
         .doc(projectId)
         .update({'leaderboard': currentLeaderboard}).then((value) {
-      context.go('/patterns/' + widget.projectKey.toString());
+      widget.hideTileSetEntry();
+      Navigator.pop(context);
     });
   }
 
