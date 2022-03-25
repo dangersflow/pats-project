@@ -254,7 +254,9 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
                               )
                             : ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.all(20)),
+                                    padding: EdgeInsets.all(
+                                        MediaQuery.of(context).size.width *
+                                            0.009)),
                                 onPressed: () {
                                   mainSimulation.simulateInOrder();
 

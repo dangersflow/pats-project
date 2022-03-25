@@ -35,10 +35,11 @@ class _LeaderboardState extends State<Leaderboard> {
     return LayoutGrid(
       areas: '''
       leaderboard
+      .
       button
       ''',
       columnSizes: [1.fr],
-      rowSizes: [1.7.fr, 0.3.fr],
+      rowSizes: [1.8.fr, 0.1.fr, 0.2.fr],
       children: [
         StreamBuilder(
             stream: FirebaseFirestore.instance

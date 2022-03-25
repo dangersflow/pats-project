@@ -86,7 +86,7 @@ class _TileState extends State<Tile> {
                     Text(
                       widget.glues!['N'] ?? '',
                       style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.006,
+                          fontSize: MediaQuery.of(context).size.width * 0.01,
                           fontWeight: FontWeight.bold),
                     )
                   ],
@@ -97,15 +97,15 @@ class _TileState extends State<Tile> {
                   children: [
                     Text(widget.glues?['W'] ?? '',
                         style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.006,
+                            fontSize: MediaQuery.of(context).size.width * 0.01,
                             fontWeight: FontWeight.bold)),
                     Text(widget.showIndex ? widget.id.toString() : '',
                         style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.006,
+                            fontSize: MediaQuery.of(context).size.width * 0.01,
                             fontWeight: FontWeight.bold)),
                     Text(widget.glues?['E'] ?? '',
                         style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.006,
+                            fontSize: MediaQuery.of(context).size.width * 0.01,
                             fontWeight: FontWeight.bold))
                   ],
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,7 +115,7 @@ class _TileState extends State<Tile> {
                   children: [
                     Text(widget.glues?['S'] ?? '',
                         style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.006,
+                            fontSize: MediaQuery.of(context).size.width * 0.01,
                             fontWeight: FontWeight.bold)),
                   ],
                   mainAxisAlignment: MainAxisAlignment.center,
