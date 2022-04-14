@@ -50,20 +50,25 @@ class _LeaderboardState extends State<Leaderboard> {
               if (snapshot.hasData) {
                 print("here is data");
                 print(snapshot.data!.data()['leaderboard']);
+                //save data to list
+                List<dynamic> leaderboard =
+                    snapshot.data!.data()['leaderboard'];
+                //sort leaderboard
+                leaderboard
+                    .sort((a, b) => (a['numTiles']).compareTo(b['numTiles']));
+                print(leaderboard);
                 return snapshot.data!.data()['leaderboard'].length < 1
                     ? Center(
                         child: Text("Take a shot at building this pattern!"),
                       )
                     : ListView.builder(
-                        itemCount: snapshot.data!.data()['leaderboard'].length,
+                        itemCount: leaderboard.length,
                         itemBuilder: (context, index) {
                           print("I am being repainted at " + index.toString());
                           return LeaderboardTile(
                             index: index + 1,
-                            name: snapshot.data!.data()['leaderboard'][index]
-                                ['name'],
-                            numTiles: snapshot.data!.data()['leaderboard']
-                                [index]['numTiles'],
+                            name: leaderboard[index]['name'],
+                            numTiles: leaderboard[index]['numTiles'],
                           );
                         },
                       );

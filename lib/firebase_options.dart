@@ -27,6 +27,8 @@ class DefaultFirebaseOptions {
         return ios;
       case TargetPlatform.macOS:
         return macos;
+      case TargetPlatform.windows:
+        return desktop;
     }
 
     throw UnsupportedError(
@@ -35,6 +37,16 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCtPnY6osXkhRA0FGAbCymRPrT8wG3HlBA',
+    appId: '1:773114516465:web:b488823bcce67595d76a50',
+    messagingSenderId: '773114516465',
+    projectId: 'pats-project-12d69',
+    authDomain: 'pats-project-12d69.firebaseapp.com',
+    storageBucket: 'pats-project-12d69.appspot.com',
+    measurementId: 'G-CW7HLH2YHE',
+  );
+
+  static const FirebaseOptions desktop = FirebaseOptions(
     apiKey: 'AIzaSyCtPnY6osXkhRA0FGAbCymRPrT8wG3HlBA',
     appId: '1:773114516465:web:b488823bcce67595d76a50',
     messagingSenderId: '773114516465',
@@ -58,7 +70,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '773114516465',
     projectId: 'pats-project-12d69',
     storageBucket: 'pats-project-12d69.appspot.com',
-    iosClientId: '773114516465-uqva8gu4fhmg3lhub60aanpeu5bsok96.apps.googleusercontent.com',
+    iosClientId:
+        '773114516465-uqva8gu4fhmg3lhub60aanpeu5bsok96.apps.googleusercontent.com',
     iosBundleId: 'com.example.patsproject',
   );
 
@@ -68,7 +81,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '773114516465',
     projectId: 'pats-project-12d69',
     storageBucket: 'pats-project-12d69.appspot.com',
-    iosClientId: '773114516465-uqva8gu4fhmg3lhub60aanpeu5bsok96.apps.googleusercontent.com',
+    iosClientId:
+        '773114516465-uqva8gu4fhmg3lhub60aanpeu5bsok96.apps.googleusercontent.com',
     iosBundleId: 'com.example.patsproject',
   );
 }
