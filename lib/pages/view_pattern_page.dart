@@ -88,7 +88,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
       List<Tile> tempArray = [];
       for (int i = 0; i < x; i++) {
         tempArray.add(Tile(
-          color: Colors.red,
+          color: Colors.transparent,
           showBorder: true,
           showGlues: true,
           glues: const {'N': '0', 'S': ' ', 'E': ' ', 'W': ' '},
@@ -103,7 +103,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
       List<Tile> tempArray = [];
       for (int i = 0; i < x; i++) {
         tempArray.add(Tile(
-          color: Colors.red,
+          color: Colors.transparent,
           showBorder: true,
           showGlues: true,
           glues: const {'N': ' ', 'S': ' ', 'E': '0', 'W': ' '},
@@ -217,6 +217,7 @@ class _ViewPatternPageState extends State<ViewPatternPage> {
               child: FadeInUp(
                   child: PATSSimulationWidget(
             grid: gridTiles,
+            gridCopy: grid,
             projectKey: widget.projectKey,
             bottomGlueRow: bottomTileRow,
             leftGlueColumn: leftTileColumn,

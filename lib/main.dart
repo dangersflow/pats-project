@@ -51,10 +51,10 @@ class _MyAppState extends State<MyApp> {
 
     _router = GoRouter(
       routes: [
-        // GoRoute(
-        //   path: '/',
-        //   builder: (context, state) => const LogInPage(),
-        // ),
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LogInPage(),
+        ),
         GoRoute(
             path: '/',
             builder: (context, state) => PatternHomePage(

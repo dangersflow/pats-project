@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 
 class PATSSimulationWidget extends StatefulWidget {
   List<Tile> grid;
+  List<Map> gridCopy;
   List<Tile> bottomGlueRow;
   List<Tile> leftGlueColumn;
   List<Tile> tilePool;
@@ -25,6 +26,7 @@ class PATSSimulationWidget extends StatefulWidget {
   PATSSimulationWidget(
       {Key? key,
       required this.grid,
+      required this.gridCopy,
       required this.bottomGlueRow,
       required this.leftGlueColumn,
       required this.tilePool,
@@ -43,6 +45,7 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
   List<Map> gridMap = [];
   List<Map> resultingGridMap = [];
   List<Tile> transparancyGrid = [];
+  List<Map> gridCopy = [];
   List<Map> currentLeaderboard = [];
   String projectId = '';
   bool performAnimation = false;
@@ -124,6 +127,9 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (gridCopy.length == 0) {
+      gridCopy = convertGridToMap(widget.grid);
+    }
     transparancyGrid = TileGridToTransparentTileGrid(widget.grid);
     gridMap = convertGridToMap(transparancyGrid);
   }
@@ -135,7 +141,7 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
     }
 
     for (int i = 0; i < grid1.length; i++) {
-      if (grid1[i]['color'] != grid2[i]['color']) {
+      if (Color(grid1[i]['color']).value != Color(grid2[i]['color']).value) {
         return false;
       }
     }
@@ -274,8 +280,8 @@ class _PATSSimulationWidgetState extends State<PATSSimulationWidget> {
 
                                   //verification
                                   setState(() {
-                                    verification =
-                                        checkIfSame(resultingGridMap, temp);
+                                    verification = checkIfSame(
+                                        resultingGridMap, widget.gridCopy);
                                     print(verification);
                                     simulationFinished = true;
                                   });
